@@ -28,17 +28,14 @@ int main(void)
 	eatline();
 
 
-	MailBox c(login, password, server);
-	c.connect();
-	c.disconnect();
-	c.connect();
-	c.connect();
-	std::vector<Message> s = c.getUnAnswered();
-	for(size_t i = 0; i < s.size(); ++i)
+	MailBox mailbox(login, password, server);
+	mailbox.connect();
+	std::vector<Message> messages = mailbox.getUnAnswered();
+	for(size_t i = 0; i < messages.size(); ++i)
 	{
-		Message msg = s[i];
-		NotifyMessage nM(msg);
-		nM.printNotify();
+		Message msg = messages[i];
+		NotifyMessage notifyMessage(msg);
+		notifyMessage.printNotify();
 	}
 
 	return 0;	
