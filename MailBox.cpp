@@ -2,7 +2,6 @@
 #include <vector>
 #include <vmime/vmime.hpp>
 
-#include "authenticator.hpp"
 #include "certificateVerifier.hpp"
 #include "timeoutHandler.hpp"
 #include "tracer.hpp"
