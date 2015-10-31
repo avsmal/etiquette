@@ -1,5 +1,6 @@
 #include <vmime/vmime.hpp>
 #include <string>
+
 #include "Message.hpp"
 
 Message::Message(vmime::shared_ptr <vmime::net::message> msg, vmime::shared_ptr <vmime::net::folder> folder):
