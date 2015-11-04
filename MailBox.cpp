@@ -8,13 +8,13 @@
 
 #include "Message.hpp"
 #include "MailBox.hpp"
-
+#include "MailBoxSetting.hpp"
 
 static vmime::shared_ptr <vmime::net::session> g_session
 	= vmime::make_shared <vmime::net::session>();
 
-MailBox::MailBox(std::string const & userName, std::string const & userPassword, std::string const & serverAddress) :
-	url_(makeUrl_(userName, userPassword, serverAddress)), store_(nullptr)
+MailBox::MailBox(std::string const & userName, std::string const & userPassword, std::string const & serverAddress, MailBoxSetting const & mailBoxSetting):
+	url_(makeUrl_(userName, userPassword, serverAddress)), store_(nullptr), setting_(mailBoxSetting)
 {}
 
 vmime::utility::url MailBox::makeUrl_(std::string const & userName, std::string const & userPassword, std::string const & serverAddress)
@@ -45,8 +45,7 @@ bool MailBox::disconnect()
 	return true;
 }
 
-//TODO: const и &
-void MailBox::makeStore_(vmime::utility::url url)
+void MailBox::makeStore_(vmime::utility::url const & url)
 {
 	store_ = g_session->getStore(url);
 	store_->setProperty("connection.tls", true);
@@ -66,7 +65,7 @@ std::vector<Message> MailBox::getUnAnswered()
 	for (auto folder : folders)
 	{
 		folder->open(vmime::net::folder::MODE_READ_ONLY);
-		if(valuableFolder_(folder))
+		if(!setting_.isIgnoredFolder(folder))
 		{
 			for(size_t i = 1; i <= folder->getMessageCount(); ++i)
 			{
@@ -83,17 +82,6 @@ std::vector<Message> MailBox::getUnAnswered()
 	}
 	return messages;
 	
-}
-bool MailBox::valuableFolder_(vmime::shared_ptr<vmime::net::folder> folder)
-{
-	//TODO: "Spam" etc должны быть такими же параметрами как и username и password
-	//TODO: создать объект MailBoxSetting с настройками
-	std::string folderName = folder->getFullPath().toString("/",  vmime::charset::getLocalCharset());
-	if(folderName == "Spam" || folderName == "Trash" || folderName == "Sent")
-	{
-		return false;
-	}
-	return true;
 }
 
 MailBox::~MailBox()

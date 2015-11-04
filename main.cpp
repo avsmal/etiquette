@@ -5,7 +5,7 @@
 #include "MailBox.hpp"
 #include "Message.hpp"
 #include "NotifyMessage.hpp"
-
+#include "MailBoxSetting.hpp"
 
 	
 
@@ -29,8 +29,15 @@ int main(void)
 	std::cin >> server;
 	eatline();
 
+	std::vector<std::string> ignoredMailBox;
+	ignoredMailBox.push_back("Spam");
+	ignoredMailBox.push_back("Trash");
+	ignoredMailBox.push_back("Sent");
 
-	MailBox mailbox(login, password, server);
+	MailBoxSetting mailBoxSetting(ignoredMailBox);
+
+
+	MailBox mailbox(login, password, server, mailBoxSetting);
 	mailbox.connect();
 	std::vector<Message> messages = mailbox.getUnAnswered();
 	for(size_t i = 0; i < messages.size(); ++i)
