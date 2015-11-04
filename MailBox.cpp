@@ -44,6 +44,8 @@ bool MailBox::disconnect()
 	}
 	return true;
 }
+
+//TODO: const и &
 void MailBox::makeStore_(vmime::utility::url url)
 {
 	store_ = g_session->getStore(url);
@@ -84,6 +86,8 @@ std::vector<Message> MailBox::getUnAnswered()
 }
 bool MailBox::valuableFolder_(vmime::shared_ptr<vmime::net::folder> folder)
 {
+	//TODO: "Spam" etc должны быть такими же параметрами как и username и password
+	//TODO: создать объект MailBoxSetting с настройками
 	std::string folderName = folder->getFullPath().toString("/",  vmime::charset::getLocalCharset());
 	if(folderName == "Spam" || folderName == "Trash" || folderName == "Sent")
 	{

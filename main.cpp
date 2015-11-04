@@ -13,6 +13,8 @@ inline void eatline() { while (std::cin.get() != '\n') continue; }
 
 int main(void)
 {
+
+	//TODO: где обработка исключение из сетевой части?
 	std::string login;
 	std::string password;
 	std::string server;
