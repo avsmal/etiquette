@@ -4,8 +4,7 @@
 
 class NotifyMessage {
 	public:
-        //TOOD: const &
-		NotifyMessage(Message msg);
+		NotifyMessage(Message const & msg);
 		void printNotify();
 	private:
 		Message msg_;

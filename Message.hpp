@@ -5,16 +5,20 @@
 class Message
 {
 	public:
-	Message(vmime::shared_ptr<vmime::net::message> msg, vmime::shared_ptr<vmime::net::folder> folder);
+	//Constructors
+	Message(vmime::shared_ptr<vmime::net::message> const & msg, vmime::shared_ptr<vmime::net::folder> const & folder);
 	Message(Message const & msg);
-	//TODO: возвращать const ссылки
-	//TODO: добавить const у методов
-	//TODO: ленивая инициализация полей from и subject
-	std::string getFrom();
-	std::string getSubject();
-	std::string getBody();
-	bool isAnswered();
+	
+	//Methods
+	std::string const & getFrom() const;
+	std::string const & getSubject() const;
+	std::string const & getBody() const ;
+	bool isAnswered() const;
+
 	private:
 	vmime::shared_ptr<vmime::net::folder>  folder_ptr_;
 	vmime::shared_ptr<vmime::net::message> message_ptr_;
+	mutable std::string from_;
+	mutable std::string subject_;
+	mutable std::string body_;
 };
