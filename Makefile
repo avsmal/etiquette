@@ -22,5 +22,3 @@ MailBoxSetting.o: MailBoxSetting.cpp
 
 clean:
 	rm -rf *.o myprog
-
--std=c++11 -o myprog -lvmime 
