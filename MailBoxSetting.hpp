@@ -1,8 +1,7 @@
 #pragma once
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 #include <vmime/vmime.hpp>
-
 
 class MailBoxSetting
 {

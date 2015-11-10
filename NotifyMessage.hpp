@@ -1,7 +1,6 @@
 #pragma once
 #include "Message.hpp"
 
-
 class NotifyMessage {
 	public:
 		NotifyMessage(Message const & msg);
