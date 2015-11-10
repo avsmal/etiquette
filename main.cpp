@@ -1,18 +1,19 @@
 #include <iostream>
 #include <string>
 #include <vmime/vmime.hpp>
+#include <vmime/platforms/posix/posixHandler.hpp>
 
 #include "MailBox.hpp"
 #include "Message.hpp"
 #include "NotifyMessage.hpp"
 #include "MailBoxSetting.hpp"
-
 	
 
 inline void eatline() { while (std::cin.get() != '\n') continue; }
 
 int main(void)
 {
+	vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
 
 	//TODO: где обработка исключение из сетевой части?
 	std::string login;
@@ -38,7 +39,15 @@ int main(void)
 
 
 	MailBox mailbox(login, password, server, mailBoxSetting);
-	mailbox.connect();
+	try
+	{
+		mailbox.connect();
+	
+	}
+	catch (vmime::exception& e)
+    	{
+        	std::cerr << "vmime::exception; " << e.what() << std::endl;
+    	}
 	std::vector<Message> messages = mailbox.getUnAnswered();
 	for(size_t i = 0; i < messages.size(); ++i)
 	{

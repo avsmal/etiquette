@@ -6,7 +6,6 @@
 #include "Message.hpp"
 #include "MailBoxSetting.hpp"
 
-
 class MailBox
 {
 	public:
@@ -25,7 +24,7 @@ class MailBox
 	vmime::utility::url makeUrl_(std::string const & userPassword, std::string const & userName, std::string const & serverAddress);
 	void                makeStore_(vmime::utility::url const & url);
 
-	vmime::shared_ptr <vmime::net::store>                 store_;
+	vmime::ref <vmime::net::store>                        store_;
 	vmime::utility::url                   	              url_;
 	MailBoxSetting                                        setting_;
 };

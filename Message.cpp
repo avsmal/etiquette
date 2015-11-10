@@ -3,7 +3,7 @@
 
 #include "Message.hpp"
 
-Message::Message(vmime::shared_ptr <vmime::net::message> const & msg, vmime::shared_ptr <vmime::net::folder> const & folder):
+Message::Message(vmime::ref <vmime::net::message> const & msg, vmime::ref <vmime::net::folder> const & folder):
 	message_ptr_(msg), folder_ptr_(folder)
 {}
 Message::Message(Message const & msg):
@@ -12,8 +12,8 @@ Message::Message(Message const & msg):
 std::string const & Message::getFrom() const
 {	
 	if(from_.empty())
-	{
-		from_ = message_ptr_->getHeader()->From()->getValue<vmime::mailbox>()->getEmail().toString();
+	{		
+		from_ = message_ptr_->getHeader()->From()->getValue().dynamicCast<const vmime::mailbox>()->getEmail();
 	}
 	return from_;
 }
@@ -22,12 +22,12 @@ std::string const & Message::getSubject() const
 {
 	if(subject_.empty())
 	{
-		subject_ = message_ptr_->getHeader()->Subject()->getValue<vmime::text>()->getConvertedText(vmime::charset("utf-8"));
+		subject_ = message_ptr_->getHeader()->Subject()->getValue().dynamicCast<const vmime::text>()->getConvertedText(vmime::charset("utf-8"));
 	}
 	return subject_;
 }
 
-std::string const & Message::getBody() const 
+std::string const & Message::getBody() 
 {
 	if(body_.empty())
 	{
@@ -35,8 +35,8 @@ std::string const & Message::getBody() const
 		vmime::utility::outputStreamStringAdapter out(outString);
 
 		vmime::messageParser parsedMessage(message_ptr_->getParsedMessage());
-		parsedMessage.getTextPartList()[0]->getText()->extract(out);
-		body_ = outString;
+		//parsedMessage.getTextPartList()[0]->getText()->extract(out);
+		//body_ = outString;
 	}
 	return body_; //?
 }

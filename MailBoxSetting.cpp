@@ -14,10 +14,10 @@ MailBoxSetting::MailBoxSetting(MailBoxSetting const & mailBoxSetting)
 	ignored_folder_name_ = mailBoxSetting.ignored_folder_name_;
 }
 
-bool MailBoxSetting::isIgnoredFolder(vmime::shared_ptr<vmime::net::folder> const & folder) const
+bool MailBoxSetting::isIgnoredFolder(vmime::ref<vmime::net::folder> const & folder) const
 {
 	//O(n) -> O(log(n)) ?
-	std::string folderName = folder->getFullPath().toString("/",  vmime::charset::getLocalCharset());
+	std::string folderName = folder->getFullPath().getLastComponent().generate();
 	for (auto ignored_folder : ignored_folder_name_)
 	{
 		if(folderName == ignored_folder)

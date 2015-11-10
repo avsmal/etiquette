@@ -40,9 +40,9 @@ class timeoutHandlerFactory : public vmime::net::timeoutHandlerFactory
 {
 public:
 
-	vmime::shared_ptr <vmime::net::timeoutHandler> create()
+	vmime::ref <vmime::net::timeoutHandler> create()
 	{
-		return vmime::make_shared <timeoutHandler>();
+		return vmime::create <timeoutHandler>();
 	}
 };
 
