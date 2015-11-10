@@ -1,0 +1,12 @@
+Mail.ru:
+	imap.mail.ru:993
+		1. Разрешить доступ по imap
+google.com:
+	imap.googlemail.com:993
+		1.Разрешить доступ к почте по imap
+		2.Разрешить непроверенным приложениям доступ к почте (https://www.google.com/settings/security/lesssecureapps)
+yandex.ru
+	imap.yandex.ru:993
+		1.Не работает на старой версии библиотеки vmime
+			Описание:(https://groups.google.com/forum/#!category-topic/vmime/helpsupport/MGN-h5gkHRc) 
+			Испарвления:(https://github.com/kisli/vmime/commit/5f63d4740192d617bd45ad8ff3d336f44461b18a)
