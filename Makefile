@@ -1,23 +1,22 @@
 glib=`pkg-config --cflags glib-2.0`
 gdk=`pkg-config --cflags gdk-pixbuf-2.0`
 notify=`pkg-config --cflags --libs libnotify`
-vmime=`pkg-config --cflags --libs vmime`
+vmime=-lvmime
 
 all: myprog
 
-myprog: main.o MailBox.o Message.o NotifyMessage.o MailBoxSetting.o certificateVerifier.o
-	g++ -std=c++11 main.o MailBox.o Message.o NotifyMessage.o MailBoxSetting.o certificateVerifier.o $(vmime) $(notify)-o myprog
-main.o: main.cpp MailBox.hpp Message.hpp NotifyMessage.hpp MailBoxSetting.hpp
-	g++ -std=c++11 -c main.cpp
-MailBox.o: MailBox.cpp Message.hpp MailBoxSetting.hpp MailBox.hpp timeoutHandler.hpp
-	g++ -std=c++11 -c MailBox.cpp
-Message.o: Message.cpp Message.hpp
-	g++ -std=c++11 -c Message.cpp
-NotifyMessage.o: NotifyMessage.cpp NotifyMessage.hpp Message.hpp
-	g++ -std=c++11 -c $(glib) $(gdk) NotifyMessage.cpp
-MailBoxSetting.o: MailBoxSetting.cpp MailBoxSetting.hpp
-	g++ -std=c++11 -c MailBoxSetting.cpp
-certificateVerifier.o: certificateVerifier.cpp certificateVerifier.hpp
-	g++ -std=c++11 -c certificateVerifier.cpp
+myprog: MailBox.o Message.o NotifyMessage.o certificateVerifier.o MailBoxSetting.o messagesmodule.c
+	g++ -std=c++11 -shared -fPIC -I/usr/include/python2.7/ -lpython2.7 messagesmodule.c MailBox.o Message.o NotifyMessage.o certificateVerifier.o MailBoxSetting.o $(vmime) $(notify)-o messagesmodule.so
+MailBox.o: MailBox.cpp
+	g++ -std=c++11 -c -fPIC MailBox.cpp
+Message.o: Message.cpp
+	g++ -std=c++11 -c -fPIC Message.cpp
+NotifyMessage.o: NotifyMessage.cpp
+	g++ -std=c++11 -c -fPIC $(glib) $(gdk) NotifyMessage.cpp
+certificateVerifier.o: certificateVerifier.cpp
+	g++ -std=c++11 -c -fPIC certificateVerifier.cpp
+MailBoxSetting.o: MailBoxSetting.cpp
+	g++ -std=c++11 -c -fPIC MailBoxSetting.cpp
+
 clean:
-	rm -rf *.o myprog
+	rm -rf *.o *.so myprog
