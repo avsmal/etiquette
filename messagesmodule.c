@@ -9,39 +9,31 @@
 #include "MailBox.hpp"
 #include "Message.hpp"
 #include "NotifyMessage.hpp"
-#include "MailBoxSetting.hpp"
+#include "CreatedMailBoxes.hpp"
 
 static PyObject* py_getmessages(PyObject* self, PyObject* args)
 {
 	vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
-	std::string login;
-	std::string password;
-	std::string server;
-	
-	login =  "test.imap2015@mail.ru";
-	password = "824222443a";
-	server =  "imap.mail.ru:993";
 
-	std::vector<std::string> ignoredMailBox;
-	ignoredMailBox.push_back("Spam");
-	ignoredMailBox.push_back("Trash");
-	ignoredMailBox.push_back("Sent");
-
-	MailBoxSetting mailBoxSetting(ignoredMailBox);
-
-
-	MailBox mailbox(login, password, server, mailBoxSetting);
-	mailbox.connect();
-	std::vector<Message> messages = mailbox.getUnAnswered();
-	PyObject * res = PyList_New(messages.size());
-	for(size_t i = 0; i < messages.size(); ++i)
+	std::string config = "config.xml";
+	CreatedMailBox createdMailBox(config);
+	std::vector<MailBox> mailBoxes = createdMailBox.getMailBoxes();
+	PyObject * ans = NULL;
+	for (size_t i = 0; i < mailBoxes.size(); ++i)
 	{
-		Message msg = messages[i];
-		NotifyMessage notifyMessage(msg);
-		notifyMessage.printNotify();
-		PyList_SetItem(res, i, PyString_FromString(messages[i].getFrom().c_str()));
+		mailBoxes[i].connect();
+		std::vector<Message> messages = mailBoxes[i].getUnAnswered();
+		PyObject * res = PyList_New(messages.size());
+		for(size_t i = 0; i < messages.size(); ++i)
+		{
+			Message msg = messages[i];
+			NotifyMessage notifyMessage(msg);
+			notifyMessage.printNotify();
+			PyList_SetItem(res, i, PyString_FromString(messages[i].getFrom().c_str()));
+		}
+		ans = res;
 	}
-	return res;
+	return ans;
 }
 
 static PyMethodDef myModule_methods[] = {

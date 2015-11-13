@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ddd>
+	<mailboxs number="2">
+		<mailbox login="test.imap2015@mail.ru" password="824222443a" server="imap.mail.ru:993"/>
+	</mailboxs>
+</ddd>
