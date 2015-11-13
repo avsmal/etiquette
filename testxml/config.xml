@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ddd>
+	<mailboxs number="2">
+		<mailbox login="test.imap2015@mail.ru" password="824222443a">
+			<server server="imap.mail.ru:993"/>
+		</mailbox>
+		<mailbox login="testimap2014@gmail.com" password="824222443">
+			<server server="imap.googlemail.com:993"/>
+		</mailbox>
+	</mailboxs>
+</ddd>
