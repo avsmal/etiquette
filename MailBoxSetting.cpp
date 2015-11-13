@@ -1,5 +1,5 @@
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 #include <vmime/vmime.hpp>
 
 #include "MailBoxSetting.hpp"
