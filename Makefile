@@ -6,7 +6,7 @@ python=-I/usr/include/python2.7/ -lpython2.7
 tinyxml=-ltinyxml
 
 
-all: bin/messagesmodule.so
+all: bin/messagesmodule.so bin/applet.py bin/config.xml
 
 bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o
 	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
@@ -32,5 +32,11 @@ bin/MailBoxSetting.o: src/net/MailBoxSetting.cpp src/net/MailBoxSetting.hpp
 bin/messagesmodule.o: src/net/messagesmodule.c src/ui/cpp/NotifyMessage.hpp src/net/Message.hpp
 	g++ -std=c++11 -c -fPIC $(python) src/net/messagesmodule.c -o $@
 
+bin/applet.py: src/ui/py/applet.py
+	cp ./src/ui/py/applet.py bin/
+
+bin/config.xml: config.xml
+	cp ./config.xml bin/
+	
 clean:
-	rm -rf bin/*.o bin/*.so
+	rm -rf bin/*.o bin/*.so bin/*.py bin/*.xml
