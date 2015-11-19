@@ -8,7 +8,7 @@
 
 #include "MailBox.hpp"
 #include "Message.hpp"
-#include "NotifyMessage.hpp"
+#include "../ui/cpp/NotifyMessage.hpp"
 #include "CreatedMailBoxes.hpp"
 
 static PyObject* py_getmessages(PyObject* self, PyObject* args)

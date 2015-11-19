@@ -1,5 +1,5 @@
 #pragma once
-#include "Message.hpp"
+#include "../../net/Message.hpp"
 
 class NotifyMessage {
 	public:

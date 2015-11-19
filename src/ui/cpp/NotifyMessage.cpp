@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #include "NotifyMessage.hpp"
-#include "Message.hpp"
+#include "../../net/Message.hpp"
 
 NotifyMessage::NotifyMessage(Message const & msg):
 	msg_(msg)

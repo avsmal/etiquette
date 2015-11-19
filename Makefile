@@ -5,31 +5,32 @@ vmime=`pkg-config --cflags --libs vmime`
 python=-I/usr/include/python2.7/ -lpython2.7
 tinyxml=-ltinyxml
 
-all: myprog
 
-myprog: messagesmodule.o MailBox.o Message.o NotifyMessage.o certificateVerifier.o MailBoxSetting.o CreatedMailBoxes.o
-	g++ -std=c++11 -shared messagesmodule.o MailBox.o Message.o NotifyMessage.o certificateVerifier.o MailBoxSetting.o CreatedMailBoxes.o $(tinyxml) $(python) $(vmime) $(notify)-o messagesmodule.so
+all: bin/messagesmodule.so
 
-MailBox.o: MailBox.cpp timeoutHandler.hpp Message.hpp MailBoxSetting.hpp certificateVerifier.hpp
-	g++ -std=c++11 -c -fPIC MailBox.cpp
+bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o
+	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
 
-Message.o: Message.cpp Message.hpp
-	g++ -std=c++11 -c -fPIC Message.cpp
+bin/MailBox.o: src/net/MailBox.cpp src/net/timeoutHandler.hpp src/net/Message.hpp src/net/MailBoxSetting.hpp src/net/certificateVerifier.hpp
+	g++ -std=c++11 -c -fPIC src/net/MailBox.cpp -o $@
 
-NotifyMessage.o: NotifyMessage.cpp Message.hpp NotifyMessage.hpp
-	g++ -std=c++11 -c -fPIC $(glib) $(gdk) NotifyMessage.cpp
+bin/Message.o: src/net/Message.cpp src/net/Message.hpp
+	g++ -std=c++11 -c -fPIC src/net/Message.cpp -o $@
 
-certificateVerifier.o: certificateVerifier.cpp certificateVerifier.hpp
-	g++ -std=c++11 -c -fPIC certificateVerifier.cpp
+bin/NotifyMessage.o: src/net/Message.hpp src/ui/cpp/NotifyMessage.cpp src/ui/cpp/NotifyMessage.hpp
+	g++ -std=c++11 -c -fPIC $(glib) $(gdk) src/ui/cpp/NotifyMessage.cpp -o $@
 
-CreatedMailBoxes.o: MailBox.hpp CreatedMailBoxes.cpp CreatedMailBoxes.hpp MailBoxSetting.hpp
-	g++ -std=c++11 -c -fPIC CreatedMailBoxes.cpp
+bin/certificateVerifier.o: src/net/certificateVerifier.cpp src/net/certificateVerifier.hpp
+	g++ -std=c++11 -c -fPIC src/net/certificateVerifier.cpp -o $@
 
-MailBoxSetting.o: MailBoxSetting.cpp MailBoxSetting.hpp
-	g++ -std=c++11 -c -fPIC MailBoxSetting.cpp
+bin/CreatedMailBoxes.o: src/net/MailBox.hpp src/net/CreatedMailBoxes.cpp src/net/CreatedMailBoxes.hpp src/net/MailBoxSetting.hpp
+	g++ -std=c++11 -c -fPIC src/net/CreatedMailBoxes.cpp -o $@
 
-messagesmodule.o: messagesmodule.c
-	g++ -std=c++11 -c -fPIC $(python) messagesmodule.c
+bin/MailBoxSetting.o: src/net/MailBoxSetting.cpp src/net/MailBoxSetting.hpp
+	g++ -std=c++11 -c -fPIC src/net/MailBoxSetting.cpp -o $@
+
+bin/messagesmodule.o: src/net/messagesmodule.c src/ui/cpp/NotifyMessage.hpp src/net/Message.hpp
+	g++ -std=c++11 -c -fPIC $(python) src/net/messagesmodule.c -o $@
 
 clean:
-	rm -rf *.o *.so myprog
+	rm -rf bin/*.o bin/*.so
