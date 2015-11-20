@@ -14,11 +14,14 @@ static vmime::ref <vmime::net::session> g_session
 	= vmime::create <vmime::net::session>();
 
 MailBox::MailBox(MailBoxSetting const & mailBoxSetting):
-    url_(makeUrl_(mailBoxSetting.getLogin(), mailBoxSetting.getPassword(), mailBoxSetting.getServer())),
     store_(nullptr),
     setting_(mailBoxSetting)
 {}
 
+
+MailBox::MailBox():
+    store_(nullptr)
+{}
 vmime::utility::url MailBox::makeUrl_(std::string const & login,
                                       std::string const & password,
                                       std::string const & server) {
@@ -29,9 +32,8 @@ vmime::utility::url MailBox::makeUrl_(std::string const & login,
 	return url;
 }
 bool MailBox::connect() {
-	//??
 	if (!store_) {
-		makeStore_(url_);
+		makeStore_(makeUrl_(setting_.getLogin(), setting_.getPassword(), setting_.getServer()));
 		store_->connect();
 	}
 	return true;
@@ -83,4 +85,12 @@ MailBox::~MailBox() {
 	if (store_) {
 		disconnect();
 	}
+}
+
+MailBox & MailBox::operator =(const MailBox & other) {
+	if (this != &other) {
+		store_ = other.store_;
+		setting_ = other.setting_;
+	}
+	return *this;
 }

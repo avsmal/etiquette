@@ -4,20 +4,20 @@ notify=`pkg-config --cflags --libs libnotify`
 vmime=`pkg-config --cflags --libs vmime`
 python=-I/usr/include/python2.7/ -lpython2.7
 tinyxml=-ltinyxml
-
+LIB_TEST=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 
 all: bin/messagesmodule.so bin/applet.py bin/config.xml
 
-test: bin/tst bin/config.xml
+test: bin/test
 
 bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o
 	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
 
-bin/tst: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o bin/test.o
-	g++ -std=c++11 bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o bin/test.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
+bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o bin/test.o
+	g++ -std=c++11 bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o bin/test.o $(tinyxml) $(python) $(vmime) $(notify) $(LIB_TEST) -o $@
 
-bin/test.o: src/net/main.cpp
-	g++ -std=c++11 -c src/net/main.cpp -o $@
+bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
+	g++ -std=c++11 -c $(LIB_TEST) test/test.cpp -o $@
 bin/Accounts.o: src/net/Accounts.hpp src/net/Accounts.cpp src/net/Setting.hpp
 	g++ -std=c++11 -c -fPIC src/net/Accounts.cpp -o $@
 

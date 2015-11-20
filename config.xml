@@ -3,5 +3,7 @@
 	<mailboxs>
 		<mailbox login="test.imap2015@mail.ru" password="824222443a" server="imap.mail.ru:993"/>
 		<mailbox login="test.imap2016@mail.ru" password="2345fg123" server="imap.mail.ru:993"/>
+		<mailbox login="test.imap2017@mail.ru" password="223ffdfww3456" server="imap.mail.ru:993"/>
+		<mailbox login="test.imap2018@mail.ru" password="df3wwqq23434" server="imap.mail.ru:993"/>
 	</mailboxs>
 </ddd>

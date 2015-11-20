@@ -12,14 +12,19 @@ MailBoxSetting::MailBoxSetting(std::string login, std::string password, std::str
     password_ = password;
     server_ = server;
 }
-
+MailBoxSetting::MailBoxSetting(std::string login, std::string password, std::string server) {
+	login_ = login;
+    password_ = password;
+    server_ = server;
+}
 MailBoxSetting::MailBoxSetting(MailBoxSetting const & mailBoxSetting) {
 	ignored_folder_name_ = mailBoxSetting.ignored_folder_name_;
     login_ = mailBoxSetting.login_;
     password_ = mailBoxSetting.password_;
     server_ = mailBoxSetting.server_;
 }
-
+MailBoxSetting::MailBoxSetting() {
+}
 bool MailBoxSetting::isIgnoredFolder(vmime::ref<vmime::net::folder> const & folder) const {
 	//O(n) -> O(log(n)) ?
 	std::string folderName = folder->getFullPath().getLastComponent().generate();
@@ -39,4 +44,14 @@ std::string const & MailBoxSetting::getPassword() const {
 }
 std::string const & MailBoxSetting::getServer() const {
     return server_;
+}
+
+MailBoxSetting & MailBoxSetting::operator =(const MailBoxSetting & other) {
+	if (this != &other) {
+		ignored_folder_name_ = other.ignored_folder_name_;
+    	login_ = other.login_;
+    	password_ = other.password_;
+    	server_ = other.server_;
+	}
+	return *this;
 }
