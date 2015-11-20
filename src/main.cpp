@@ -5,57 +5,30 @@
 
 #include "MailBox.hpp"
 #include "Message.hpp"
-#include "NotifyMessage.hpp"
+#include "../ui/cpp/NotifyMessage.hpp"
 #include "MailBoxSetting.hpp"
 	
 
 inline void eatline() { while (std::cin.get() != '\n') continue; }
 
-int main(void)
-{
+int main(void) {
 	vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
 
-	//TODO: где обработка исключение из сетевой части?
-	std::string login;
-	std::string password;
-	std::string server;
-	
-	std::cout << "Login:";
-	std::cin >> login;
-	eatline();
-	std::cout << "Password:";
-	std::cin >> password;
-	eatline();
-	std::cout << "Server:";
-	std::cin >> server;
-	eatline();
+	Setting s("config.xml");
+	Accounts acc(s);
+    std::map <std::string, std::vector<Message>> map = acc.getUnAnswered();
+	int k = 0;
+    for (auto itMap = map.begin(); itMap != map.end(); ++itMap) {
+         std::vector<Message> messages = itMap->second;
+         PyObject * res = PyList_New(messages.size());
 
-	std::vector<std::string> ignoredMailBox;
-	ignoredMailBox.push_back("Spam");
-	ignoredMailBox.push_back("Trash");
-	ignoredMailBox.push_back("Sent");
-
-	MailBoxSetting mailBoxSetting(ignoredMailBox);
-
-
-	MailBox mailbox(login, password, server, mailBoxSetting);
-	try
-	{
-		mailbox.connect();
-	
-	}
-	catch (vmime::exception& e)
-    	{
-        	std::cerr << "vmime::exception; " << e.what() << std::endl;
-    	}
-	std::vector<Message> messages = mailbox.getUnAnswered();
-	for(size_t i = 0; i < messages.size(); ++i)
-	{
-		Message msg = messages[i];
-		NotifyMessage notifyMessage(msg);
-		notifyMessage.printNotify();
-	}
-
+         for (size_t i = 0; i < messages.size(); ++i) {
+			Message msg = messages[i];
+			NotifyMessage notifyMessage(msg);
+			notifyMessage.printNotify();
+			std::cout << messages[i].getFrom() << std:endl;
+		}
+    }
 	return 0;	
 }
 

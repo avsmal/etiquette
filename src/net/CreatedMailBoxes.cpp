@@ -39,9 +39,9 @@ MailBox CreatedMailBox::makeMailBox_(TiXmlElement* mailBoxXML) {
 	ignoredMailBox.push_back("Trash");
 	ignoredMailBox.push_back("Sent");
 
-	MailBoxSetting mailBoxSetting(ignoredMailBox);
+	MailBoxSetting mailBoxSetting(login, password, server, ignoredMailBox);
 	
-	MailBox mailbox(login, password, server, mailBoxSetting);
+	MailBox mailbox(mailBoxSetting);
 	return mailbox;
 }
 

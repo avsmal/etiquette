@@ -8,8 +8,21 @@ tinyxml=-ltinyxml
 
 all: bin/messagesmodule.so bin/applet.py bin/config.xml
 
-bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o
-	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
+test: bin/tst bin/config.xml
+
+bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o
+	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
+
+bin/tst: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o bin/test.o
+	g++ -std=c++11 bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o bin/test.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
+
+bin/test.o: src/net/main.cpp
+	g++ -std=c++11 -c src/net/main.cpp -o $@
+bin/Accounts.o: src/net/Accounts.hpp src/net/Accounts.cpp src/net/Setting.hpp
+	g++ -std=c++11 -c -fPIC src/net/Accounts.cpp -o $@
+
+bin/Setting.o: src/net/Setting.hpp src/net/Setting.cpp
+	g++ -std=c++11 -c -fPIC src/net/Setting.cpp -o $@
 
 bin/MailBox.o: src/net/MailBox.cpp src/net/timeoutHandler.hpp src/net/Message.hpp src/net/MailBoxSetting.hpp src/net/certificateVerifier.hpp
 	g++ -std=c++11 -c -fPIC src/net/MailBox.cpp -o $@
@@ -37,6 +50,7 @@ bin/applet.py: src/ui/py/applet.py
 
 bin/config.xml: config.xml
 	cp ./config.xml bin/
-	
+
+
 clean:
 	rm -rf bin/*.o bin/*.so bin/*.py bin/*.xml

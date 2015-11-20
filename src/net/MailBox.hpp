@@ -11,17 +11,19 @@ class MailBox
 	public:
 
 	//Constructor
-	MailBox(std::string const & userName, std::string const & userPassword, std::string const & serverAddress, MailBoxSetting const & mailBoxSetting);
+	MailBox(MailBoxSetting const & mailBoxSetting);
 	//Methods	
 	bool connect();
 	bool disconnect();
 	std::vector<Message> getUnAnswered();
-
+    std::string const & getLogin() const;
 	~MailBox();
 
 	private:
 	//Methods
-	vmime::utility::url makeUrl_(std::string const & userPassword, std::string const & userName, std::string const & serverAddress);
+	vmime::utility::url makeUrl_(std::string const & login,
+                                 std::string const & password,
+                                 std::string const & server);
 	void                makeStore_(vmime::utility::url const & url);
 
 	vmime::ref <vmime::net::store>                        store_;
