@@ -4,7 +4,7 @@ notify=`pkg-config --cflags --libs libnotify`
 vmime=`pkg-config --cflags --libs vmime`
 python=-I/usr/include/python2.7/ -lpython2.7
 tinyxml=-ltinyxml
-LIB_TEST=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
+lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 
 all: bin/messagesmodule.so bin/applet.py bin/config.xml
 
@@ -13,11 +13,11 @@ valgrind: test
 
 test: bin/test
 
-bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o
-	g++ -std=c++11 -shared bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o $(tinyxml) $(python) $(vmime) $(notify) -o $@
+bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o
+	g++ -std=c++11 -shared $^ $(tinyxml) $(python) $(vmime) $(notify) -o $@
 
-bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/CreatedMailBoxes.o bin/Setting.o bin/Accounts.o bin/test.o
-	g++ -std=c++11 -g bin/messagesmodule.o bin/MailBox.o bin/Message.o bin/NotifyMessage.o bin/certificateVerifier.o bin/MailBoxSetting.o bin/CreatedMailBoxes.o bin/Accounts.o bin/Setting.o bin/test.o $(tinyxml) $(python) $(vmime) $(notify) $(LIB_TEST) -o $@
+bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/test.o
+	g++ -std=c++11 -g $^ $(tinyxml) $(python) $(vmime) $(notify) $(lib_test) -o $@
 
 bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
 	g++ -std=c++11 -c -g $(LIB_TEST) test/test.cpp -o $@
@@ -38,9 +38,6 @@ bin/NotifyMessage.o: src/net/Message.hpp src/ui/cpp/NotifyMessage.cpp src/ui/cpp
 
 bin/certificateVerifier.o: src/net/certificateVerifier.cpp src/net/certificateVerifier.hpp
 	g++ -std=c++11 -c -g -fPIC src/net/certificateVerifier.cpp -o $@
-
-bin/CreatedMailBoxes.o: src/net/MailBox.hpp src/net/CreatedMailBoxes.cpp src/net/CreatedMailBoxes.hpp src/net/MailBoxSetting.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/CreatedMailBoxes.cpp -o $@
 
 bin/MailBoxSetting.o: src/net/MailBoxSetting.cpp src/net/MailBoxSetting.hpp
 	g++ -std=c++11 -c -g -fPIC src/net/MailBoxSetting.cpp -o $@
