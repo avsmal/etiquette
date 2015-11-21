@@ -5,6 +5,7 @@ vmime=`pkg-config --cflags --libs vmime`
 python=-I/usr/include/python2.7/ -lpython2.7
 tinyxml=-ltinyxml
 lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
+comflag=-std=c++11 -c -g -fPIC
 
 all: bin/messagesmodule.so bin/applet.py bin/config.xml
 
@@ -21,29 +22,30 @@ bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bi
 
 bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
 	g++ -std=c++11 -c -g $(LIB_TEST) test/test.cpp -o $@
+
 bin/Accounts.o: src/net/Accounts.hpp src/net/Accounts.cpp src/net/Setting.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/Accounts.cpp -o $@
+	g++ $(comflag) src/net/Accounts.cpp -o $@
 
 bin/Setting.o: src/net/Setting.hpp src/net/Setting.cpp
-	g++ -std=c++11 -c -g -fPIC src/net/Setting.cpp -o $@
+	g++ $(comflag) src/net/Setting.cpp -o $@
 
 bin/MailBox.o: src/net/MailBox.cpp src/net/timeoutHandler.hpp src/net/Message.hpp src/net/MailBoxSetting.hpp src/net/certificateVerifier.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/MailBox.cpp -o $@
+	g++ $(comflag) src/net/MailBox.cpp -o $@
 
 bin/Message.o: src/net/Message.cpp src/net/Message.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/Message.cpp -o $@
+	g++ $(comflag) src/net/Message.cpp -o $@
 
 bin/NotifyMessage.o: src/net/Message.hpp src/ui/cpp/NotifyMessage.cpp src/ui/cpp/NotifyMessage.hpp
-	g++ -std=c++11 -c -g -fPIC $(glib) $(gdk) src/ui/cpp/NotifyMessage.cpp -o $@
+	g++ $(comflag) $(glib) $(gdk) src/ui/cpp/NotifyMessage.cpp -o $@
 
 bin/certificateVerifier.o: src/net/certificateVerifier.cpp src/net/certificateVerifier.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/certificateVerifier.cpp -o $@
+	g++ $(comflag) src/net/certificateVerifier.cpp -o $@
 
 bin/MailBoxSetting.o: src/net/MailBoxSetting.cpp src/net/MailBoxSetting.hpp
-	g++ -std=c++11 -c -g -fPIC src/net/MailBoxSetting.cpp -o $@
+	g++ $(comflag) src/net/MailBoxSetting.cpp -o $@
 
 bin/messagesmodule.o: src/net/messagesmodule.c src/ui/cpp/NotifyMessage.hpp src/net/Message.hpp
-	g++ -std=c++11 -c -g -fPIC $(python) src/net/messagesmodule.c -o $@
+	g++ $(comflag) $(python) src/net/messagesmodule.c -o $@
 
 bin/applet.py: src/ui/py/applet.py
 	cp ./src/ui/py/applet.py bin/
