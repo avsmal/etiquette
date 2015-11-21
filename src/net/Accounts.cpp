@@ -7,6 +7,10 @@
 #include "Accounts.hpp"
 
 
+//TODO:EL это должен быть главный класс, который инкапсулирует всю работу с почтой.
+//Остальные части программы общаются с почтой через него.
+//Он создается один раз. Хранит в себе все mailbox. 
+
 Accounts::Accounts(Setting const & setting):
     setting_(setting)
 {}
@@ -22,6 +26,7 @@ std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
     
     for (size_t i = 0; i < mailBoxes.size(); ++i) {
         mailBoxes[i].connect();
+        //EL:TODO make_pair
         answer.insert(std::pair<std::string,std::vector<Message>>(mailBoxes[i].getLogin(), mailBoxes[i].getUnAnswered()));
     }
     return answer;

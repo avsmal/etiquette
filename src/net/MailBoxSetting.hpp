@@ -3,6 +3,7 @@
 #include <vector>
 #include <vmime/vmime.hpp>
 
+//TODO: ссылки у std::string
 class MailBoxSetting
 {
 	public:
