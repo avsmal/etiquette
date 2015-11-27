@@ -24,13 +24,14 @@ static PyObject* py_getmessages(PyObject* self, PyObject* args) {
          std::vector<Message> messages = itMap->second;
          PyObject * res = PyList_New(messages.size());
 
-         for (size_t i = 0; i < messages.size(); ++i) {
+        for (size_t i = 0; i < messages.size(); ++i) {
 			Message msg = messages[i];
-			NotifyMessage notifyMessage(msg);
-			notifyMessage.printNotify();
 			PyList_SetItem(res, i, PyString_FromString(messages[i].getFrom().c_str()));
 		}
-        PyList_SetItem(ans, k, res);
+        PyObject * entry = PyList_New(2);
+		PyList_SetItem(entry, 0, PyString_FromString(itMap->first.c_str()));
+        PyList_SetItem(entry, 1, res);
+        PyList_SetItem(ans, k, entry);
         ++k;
     }
 	return ans;
