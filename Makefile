@@ -7,21 +7,24 @@ tinyxml=-ltinyxml
 lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 comflag=-std=c++11 -c -g -fPIC
 
-all: bin/messagesmodule.so bin/applet.py bin/config.xml
+all: bin/accounts.so bin/applet.py bin/config.xml
 
 valgrind: test
 	valgrind --leak-check=full -v --log-file="valgrind.log" ./bin/test
 
 test: bin/test
 
-bin/messagesmodule.so: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o
-	g++ -std=c++11 -shared $^ $(tinyxml) $(python) $(vmime) $(notify) -o $@
+bin/accounts.so: bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/Accounts_Py.o
+	g++ -std=c++11 -shared $^ $(tinyxml) $(python) $(vmime) $(notify) -lboost_python -o $@
 
 bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/test.o
 	g++ -std=c++11 -g $^ $(tinyxml) $(python) $(vmime) $(notify) $(lib_test) -o $@
 
 bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
 	g++ -std=c++11 -c -g $(LIB_TEST) test/test.cpp -o $@
+
+bin/Accounts_Py.o: src/net/Setting.hpp src/net/Setting.cpp
+	g++ $(comflag) src/net/Accounts_Py.cpp -I /usr/include/python2.7/ -lboost_python -o $@
 
 bin/Accounts.o: src/net/Accounts.hpp src/net/Accounts.cpp src/net/Setting.hpp
 	g++ $(comflag) src/net/Accounts.cpp -o $@
