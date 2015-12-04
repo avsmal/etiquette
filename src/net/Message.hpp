@@ -1,6 +1,7 @@
 #pragma once
 #include <vmime/vmime.hpp>
 #include <string>
+#include "DateTime.hpp"
 
 class Message
 {
@@ -13,6 +14,7 @@ class Message
 	std::string const & getFrom() const;
 	std::string const & getSubject() const;
 	std::string const & getBody();
+    DateTime    const & getDate();
 	bool isAnswered() const;
 
 	private:
@@ -21,4 +23,6 @@ class Message
 	mutable std::string from_;
 	mutable std::string subject_;
 	mutable std::string body_;
+    mutable DateTime    date_;
+    bool                is_set_date_;
 };

@@ -1,58 +1,56 @@
 #include <boost/python.hpp>
 #include <vmime/platforms/posix/posixHandler.hpp>
 #include <string>
+#include <map>
+#include <vector>
+#include <Python.h>
+#include <iostream>
 
 #include "Setting.hpp"
-
-#include <Python.h>
-
-#include <iostream>
-#include <string>
-#include <vmime/vmime.hpp>
-#include <vmime/platforms/posix/posixHandler.hpp>
-
-
 #include "MailBox.hpp"
 #include "Message.hpp"
-#include "../ui/cpp/NotifyMessage.hpp"
 #include "Accounts.hpp"
-#include "Setting.hpp"
-
-namespace bp = boost::python;
-using namespace boost::python;
-
+#include "DateTime.hpp"
 
 
 namespace {
-class AccountsPy {
-public:
-    AccountsPy(const std::string& country):
-		accounts_(Setting("config.xml")) {
+    using namespace boost::python;
 
-		vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();		
-	}
-    bp::list getNewMessages() {
-		bp::list answer;
-    	std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered();
-    	for (auto itMap = map.begin(); itMap != map.end(); ++itMap) {
-        	std::vector<Message> messages = itMap->second;
+    class AccountsPy {
+    public:
+        AccountsPy(const std::string& country):
+            accounts_(Setting("config.xml")) {
+            std::cout << "constructor" << std::endl;
+            vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();		
+	    }
+        list getNewMessages() {
+            list answer;
+            std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered();
 
-        	for (size_t i = 0; i < messages.size(); ++i) {
-            	Message msg = messages[i];
-            	bp::tuple tpl = bp::make_tuple(itMap->first, msg.getFrom());
-            	answer.append(tpl);    
-			}
-    	}
-    	return answer;
-	}
-private:
-    Accounts accounts_;
-};
+            for (auto itMap = map.begin(); itMap != map.end(); ++itMap) {
+                std::vector<Message> messages = itMap->second;
+
+                for (size_t i = 0; i < messages.size(); ++i) {
+                    Message msg = messages[i];
+                    tuple date = make_tuple(msg.getDate().Year, msg.getDate().Month, msg.getDate().Day, msg.getDate().Hour, msg.getDate().Minute, msg.getDate().Second, msg.getDate().Zone);
+                    tuple tpl = make_tuple(itMap->first, msg.getFrom());
+                    list entry;
+                    entry.append(tpl);
+                    entry.append(date);                    
+                    answer.append(entry);    
+                }
+            }
+            return answer;
+        }
+    private:
+        Accounts accounts_;
+    };
+
 }
 
 
 BOOST_PYTHON_MODULE(accounts) {
     class_<AccountsPy>("AccountsPy", init<std::string>())
-        .def("getNewMessages", &AccountsPy::getNewMessages)
+        .def("getMessages", &AccountsPy::getNewMessages)
     ;
 }

@@ -12,22 +12,22 @@
 //Он создается один раз. Хранит в себе все mailbox. 
 
 Accounts::Accounts(Setting const & setting):
-    setting_(setting)
-{}
-
-std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
-    std::vector<MailBox> mailBoxes;
-    std::map <std::string, std::vector<Message>> answer;
+    setting_(setting) {
     TiXmlElement const * child = setting_.get("ddd.mailboxs.mailbox");
 
     for (child; child; child = child->NextSiblingElement()) {
-		mailBoxes.push_back(makeMailBox_(child));
+		mail_boxes_.push_back(makeMailBox_(child));
 	}
+}
+
+std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
+    std::map <std::string, std::vector<Message>> answer;
     
-    for (size_t i = 0; i < mailBoxes.size(); ++i) {
-        mailBoxes[i].connect();
-        //EL:TODO make_pair
-        answer.insert(std::pair<std::string,std::vector<Message>>(mailBoxes[i].getLogin(), mailBoxes[i].getUnAnswered()));
+    for (size_t i = 0; i < mail_boxes_.size(); ++i) {
+        mail_boxes_[i].connect();
+        auto pair = std::make_pair(mail_boxes_[i].getLogin(), mail_boxes_[i].getUnAnswered());
+        answer.insert(pair);
+        mail_boxes_[i].disconnect();
     }
     return answer;
 }

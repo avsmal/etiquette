@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
 
 #include "Setting.hpp"
 #include "MailBox.hpp"
@@ -8,10 +9,11 @@
 
 
 class Accounts {
-    public:
+public:
     Accounts(Setting const & setting);
     std::map <std::string, std::vector<Message>> getUnAnswered();
-    private:
+private:
     Setting setting_;
+    std::vector<MailBox> mail_boxes_;
     MailBox makeMailBox_(TiXmlElement const * mailBoxXML);
 };
