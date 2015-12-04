@@ -2,36 +2,30 @@
 #include <iostream>
 
 #include "certificateVerifier.hpp"
-
+    
 std::vector <vmime::ref <vmime::security::cert::X509Certificate> >
-	interactiveCertificateVerifier::m_trustedCerts;
-void interactiveCertificateVerifier::verify(vmime::ref <vmime::security::cert::certificateChain> chain)
-{
-	try
-		{
-			setX509TrustedCerts(m_trustedCerts);
+    interactiveCertificateVerifier::m_trustedCerts;
 
-			defaultCertificateVerifier::verify(chain);
-		}
-		catch (vmime::exceptions::certificate_verification_exception&)
-		{
-			// Obtain subject's certificate
-			vmime::ref <vmime::security::cert::certificate> cert = chain->getAt(0);
+void interactiveCertificateVerifier::verify
+    (vmime::ref <vmime::security::cert::certificateChain> chain) {
+    try {
+        setX509TrustedCerts(m_trustedCerts);
+        defaultCertificateVerifier::verify(chain);
+    } catch (vmime::exceptions::certificate_verification_exception&) {
+        vmime::ref <vmime::security::cert::certificate> cert = chain->getAt(0);
+        std::cout << std::endl;
+        std::cout << "Server sent a '" << cert->getType() << "'" << " certificate." << std::endl;
 
-			std::cout << std::endl;
-			std::cout << "Server sent a '" << cert->getType() << "'" << " certificate." << std::endl;
+            // Accept it, and remember user's choice for later
+        if (cert->getType() == "X.509") {
+            m_trustedCerts.push_back(cert.dynamicCast
+            <vmime::security::cert::X509Certificate>());
+        }
 
-			// Accept it, and remember user's choice for later
-			if (cert->getType() == "X.509")
-			{
-				m_trustedCerts.push_back(cert.dynamicCast
-				<vmime::security::cert::X509Certificate>());
-			}
+        return;
 
-			return;
-
-			throw vmime::exceptions::certificate_verification_exception
-				("User did not accept the certificate.");
-		}
+        throw vmime::exceptions::certificate_verification_exception
+            ("User did not accept the certificate.");
+    }
 }
 

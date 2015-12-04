@@ -8,25 +8,25 @@
 
 class MailBox
 {
-	public:
+    public:
 
-	//Constructor
-	MailBox(MailBoxSetting const & mailBoxSetting);
-	MailBox();
-	//Methods	
-	bool connect();
-	bool disconnect();
-	std::vector<Message> getUnAnswered();
+    //Constructor
+    MailBox(MailBoxSetting const & mailBoxSetting);
+    MailBox();
+    //Methods    
+    bool connect();
+    bool disconnect();
+    std::vector<Message> getUnAnswered();
     std::string const & getLogin() const;
-	MailBox & operator =(const MailBox & other);
-	~MailBox();
-	private:
-	//Methods
-	vmime::utility::url makeUrl_(std::string const & login,
+    MailBox & operator =(const MailBox & other);
+    ~MailBox();
+    private:
+    //Methods
+    vmime::utility::url makeUrl_(std::string const & login,
                                  std::string const & password,
                                  std::string const & server);
-	void                makeStore_(vmime::utility::url const & url);
+    void                makeStore_(vmime::utility::url const & url);
 
-	vmime::ref <vmime::net::store>                        store_;
-	MailBoxSetting                                        setting_;
+    vmime::ref <vmime::net::store>                        store_;
+    MailBoxSetting                                        setting_;
 };

@@ -12,7 +12,7 @@
 #include "Accounts.hpp"
 #include "DateTime.hpp"
 
-
+    
 namespace {
     using namespace boost::python;
 
@@ -21,8 +21,8 @@ namespace {
         AccountsPy(const std::string& country):
             accounts_(Setting("config.xml")) {
             std::cout << "constructor" << std::endl;
-            vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();		
-	    }
+            vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();        
+        }
         list getNewMessages() {
             list answer;
             std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered();

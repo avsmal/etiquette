@@ -7,7 +7,7 @@
 #include "MailBox.hpp"
 #include "Message.hpp"
 
-
+    
 class Accounts {
 public:
     Accounts(Setting const & setting);

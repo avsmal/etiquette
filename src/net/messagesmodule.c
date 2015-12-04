@@ -13,9 +13,9 @@
 #include "Setting.hpp"
 
 static PyObject* py_getmessages(PyObject* self, PyObject* args) {
-	vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
-	Setting s("config.xml");
-	Accounts acc(s);
+    vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
+    Setting s("config.xml");
+    Accounts acc(s);
     std::map <std::string, std::vector<Message>> map = acc.getUnAnswered();
 
     PyObject * ans = PyList_New(map.size());
@@ -25,16 +25,16 @@ static PyObject* py_getmessages(PyObject* self, PyObject* args) {
          PyObject * res = PyList_New(messages.size());
 
         for (size_t i = 0; i < messages.size(); ++i) {
-			Message msg = messages[i];
-			PyList_SetItem(res, i, PyString_FromString(messages[i].getFrom().c_str()));
-		}
+            Message msg = messages[i];
+            PyList_SetItem(res, i, PyString_FromString(messages[i].getFrom().c_str()));
+        }
         PyObject * entry = PyList_New(2);
-		PyList_SetItem(entry, 0, PyString_FromString(itMap->first.c_str()));
+        PyList_SetItem(entry, 0, PyString_FromString(itMap->first.c_str()));
         PyList_SetItem(entry, 1, res);
         PyList_SetItem(ans, k, entry);
         ++k;
     }
-	return ans;
+    return ans;
 }
 
 static PyMethodDef myModule_methods[] = {

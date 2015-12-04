@@ -6,7 +6,7 @@
 #include "Message.hpp"
 #include "Accounts.hpp"
 
-
+    
 //TODO:EL это должен быть главный класс, который инкапсулирует всю работу с почтой.
 //Остальные части программы общаются с почтой через него.
 //Он создается один раз. Хранит в себе все mailbox. 
@@ -16,8 +16,8 @@ Accounts::Accounts(Setting const & setting):
     TiXmlElement const * child = setting_.get("ddd.mailboxs.mailbox");
 
     for (child; child; child = child->NextSiblingElement()) {
-		mail_boxes_.push_back(makeMailBox_(child));
-	}
+        mail_boxes_.push_back(makeMailBox_(child));
+    }
 }
 
 std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
@@ -33,17 +33,17 @@ std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
 }
 
 MailBox Accounts::makeMailBox_(TiXmlElement const * mailBoxXML) {
-	std::string login = mailBoxXML->Attribute("login");
-	std::string password = mailBoxXML->Attribute("password");
-	std::string server = mailBoxXML->Attribute("server");
-	
-	std::vector<std::string> ignoredMailBox;
-	ignoredMailBox.push_back("Spam");
-	ignoredMailBox.push_back("Trash");
-	ignoredMailBox.push_back("Sent");
+    std::string login = mailBoxXML->Attribute("login");
+    std::string password = mailBoxXML->Attribute("password");
+    std::string server = mailBoxXML->Attribute("server");
+    
+    std::vector<std::string> ignoredMailBox;
+    ignoredMailBox.push_back("Spam");
+    ignoredMailBox.push_back("Trash");
+    ignoredMailBox.push_back("Sent");
 
-	MailBoxSetting mailBoxSetting(login, password, server, ignoredMailBox);
-	
-	MailBox mailbox(mailBoxSetting);
-	return mailbox;
+    MailBoxSetting mailBoxSetting(login, password, server, ignoredMailBox);
+    
+    MailBox mailbox(mailBoxSetting);
+    return mailbox;
 }
