@@ -4,7 +4,6 @@
 #include <map>
 #include <vector>
 #include <Python.h>
-#include <iostream>
 
 #include "Setting.hpp"
 #include "MailBox.hpp"
@@ -18,9 +17,8 @@ namespace {
 
     class AccountsPy {
     public:
-        AccountsPy(const std::string& country):
-            accounts_(Setting("config.xml")) {
-            std::cout << "constructor" << std::endl;
+        AccountsPy(const std::string& path):
+            accounts_(Setting(path)) {
             vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();        
         }
         list getNewMessages() {
@@ -32,10 +30,13 @@ namespace {
 
                 for (size_t i = 0; i < messages.size(); ++i) {
                     Message msg = messages[i];
-                    tuple date = make_tuple(msg.getDate().Year, msg.getDate().Month, msg.getDate().Day, msg.getDate().Hour, msg.getDate().Minute, msg.getDate().Second, msg.getDate().Zone);
-                    tuple tpl = make_tuple(itMap->first, msg.getFrom());
+                    DateTime msg_date = msg.getDate();
+                    tuple date = make_tuple(msg_date.Year, msg_date.Month,
+                                            msg_date.Day,  msg_date.Hour,
+                                            msg_date.Minute, msg_date.Second,
+                                            msg_date.Zone);
                     list entry;
-                    entry.append(tpl);
+                    entry.append(make_tuple(itMap->first, msg.getFrom()));
                     entry.append(date);                    
                     answer.append(entry);    
                 }

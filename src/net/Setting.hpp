@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+
 #include "tinyxml.h"
 
 class Setting {

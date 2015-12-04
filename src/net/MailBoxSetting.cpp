@@ -5,8 +5,10 @@
 #include "MailBoxSetting.hpp"
 
 
-MailBoxSetting::MailBoxSetting(std::string login, std::string password, std::string server,
-               std::vector<std::string> const & ignored_folder_name) {
+MailBoxSetting::MailBoxSetting(std::string const & login,
+                               std::string const & password,
+                               std::string const & server,
+                               std::vector<std::string> const & ignored_folder_name) {
     ignored_folder_name_ = ignored_folder_name;
     login_ = login;
     password_ = password;

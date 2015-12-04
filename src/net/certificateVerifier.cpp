@@ -14,7 +14,8 @@ void interactiveCertificateVerifier::verify
     } catch (vmime::exceptions::certificate_verification_exception&) {
         vmime::ref <vmime::security::cert::certificate> cert = chain->getAt(0);
         std::cout << std::endl;
-        std::cout << "Server sent a '" << cert->getType() << "'" << " certificate." << std::endl;
+        std::cout << "Server sent a '" << cert->getType() << "'" 
+                  << " certificate." << std::endl;
 
             // Accept it, and remember user's choice for later
         if (cert->getType() == "X.509") {

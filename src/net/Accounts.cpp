@@ -6,11 +6,6 @@
 #include "Message.hpp"
 #include "Accounts.hpp"
 
-    
-//TODO:EL это должен быть главный класс, который инкапсулирует всю работу с почтой.
-//Остальные части программы общаются с почтой через него.
-//Он создается один раз. Хранит в себе все mailbox. 
-
 Accounts::Accounts(Setting const & setting):
     setting_(setting) {
     TiXmlElement const * child = setting_.get("ddd.mailboxs.mailbox");
@@ -25,7 +20,8 @@ std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
     
     for (size_t i = 0; i < mail_boxes_.size(); ++i) {
         mail_boxes_[i].connect();
-        auto pair = std::make_pair(mail_boxes_[i].getLogin(), mail_boxes_[i].getUnAnswered());
+        auto pair = std::make_pair(mail_boxes_[i].getLogin(), 
+                                   mail_boxes_[i].getUnAnswered());
         answer.insert(pair);
         mail_boxes_[i].disconnect();
     }

@@ -3,7 +3,6 @@
 #include <vmime/vmime.hpp>
 
 #include "timeoutHandler.hpp"
-
 #include "Message.hpp"
 #include "MailBox.hpp"
 #include "MailBoxSetting.hpp"
@@ -62,7 +61,7 @@ std::vector<Message> MailBox::getUnAnswered() {
         folder->open(vmime::net::folder::MODE_READ_ONLY);
 
         if (!setting_.isIgnoredFolder(folder)) {
-            for(size_t i = 1; i <= folder->getMessageCount(); ++i) {
+            for (size_t i = 1; i <= folder->getMessageCount(); ++i) {
                 auto msgVmime = folder->getMessage(i);
                 folder->fetchMessage(msgVmime,
                                      vmime::net::folder::FetchOptions::FETCH_FLAGS |
@@ -78,7 +77,7 @@ std::vector<Message> MailBox::getUnAnswered() {
     return messages;
     
 }
-std::string const & MailBox::getLogin() const{
+std::string const & MailBox::getLogin() const {
     return setting_.getLogin();
 }
 MailBox::~MailBox() {

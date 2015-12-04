@@ -1,13 +1,14 @@
 #pragma once
 #include <vmime/vmime.hpp>
 #include <string>
+
 #include "DateTime.hpp"
 
-class Message
-{
+class Message {
     public:
     //Constructors
-    Message(vmime::ref<vmime::net::message> const & msg, vmime::ref<vmime::net::folder> const & folder);
+    Message(vmime::ref<vmime::net::message> const & msg,
+            vmime::ref<vmime::net::folder> const & folder);
     Message(Message const & msg);
     
     //Methods
