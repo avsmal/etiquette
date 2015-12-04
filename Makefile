@@ -23,7 +23,7 @@ bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bi
 bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
 	g++ -std=c++11 -c -g $(LIB_TEST) test/test.cpp -o $@
 
-bin/Accounts_Py.o: src/net/Setting.hpp src/net/Setting.cpp
+bin/Accounts_Py.o: src/net/Setting.hpp src/net/Setting.cpp src/net/Accounts_Py.cpp
 	g++ $(comflag) src/net/Accounts_Py.cpp -I /usr/include/python2.7/ -lboost_python -o $@
 
 bin/Accounts.o: src/net/Accounts.hpp src/net/Accounts.cpp src/net/Setting.hpp
