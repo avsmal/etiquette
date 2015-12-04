@@ -7,12 +7,12 @@ tinyxml=-ltinyxml
 lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 comflag=-std=c++11 -c -g -fPIC
 
-all: bin/accounts.so bin/applet.py bin/config.xml
+all: bin bin/accounts.so bin/applet.py bin/main.py bin/server.py bin/MailDB.py bin/config.xml
 
-valgrind: test
+valgrind: bin test
 	valgrind --leak-check=full -v --log-file="valgrind.log" ./bin/test
 
-test: bin/test
+test: bin bin/test
 
 bin/accounts.so: bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/Accounts_Py.o
 	g++ -std=c++11 -shared $^ $(tinyxml) $(python) $(vmime) $(notify) -lboost_python -o $@
@@ -52,10 +52,16 @@ bin/messagesmodule.o: src/net/messagesmodule.c src/ui/cpp/NotifyMessage.hpp src/
 
 bin/applet.py: src/ui/py/applet.py
 	cp ./src/ui/py/applet.py bin/
-
+bin/main.py: src/main.py
+	cp ./src/main.py bin/
+bin/server.py: src/net/server.py
+	cp ./src/net/server.py bin/
+bin/MailDB.py: src/db/MailDB.py
+	cp ./src/db/MailDB.py bin/
 bin/config.xml: config.xml
 	cp ./config.xml bin/
-
+bin:
+	mkdir bin
 
 clean:
-	rm -rf bin/*.o bin/*.so bin/*.py bin/*.xml bin/test
+	rm -rf ./bin
