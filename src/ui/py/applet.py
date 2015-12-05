@@ -5,12 +5,11 @@ from functools import partial
 
 
 class Applet:
-    def __init__(self, data_base, limit=5, timeout_timer=5, timeout=30):
+    def __init__(self, data_base, update_timer_t=5, timeout=30):
         self.timeout = timeout
-        self.limit = limit
         self.count = 0
         self.db = data_base
-        self.timeout_timer = timeout_timer
+        self.update_timer_t = update_timer_t
         self.timeout = timeout
 
     def show(self):
@@ -20,7 +19,7 @@ class Applet:
 
         self.ind.set_menu(self.menu)
         self.menu.show_all()
-        GLib.timeout_add_seconds(self.timeout_timer, self._update)
+        GLib.timeout_add_seconds(self.update_timer_t, self._update)
         Gtk.main()
 
     def _sub_menu(self, menu_items, menu, msg):
