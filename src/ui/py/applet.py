@@ -27,9 +27,10 @@ class Applet:
         item1 = Gtk.MenuItem('ignore')
         item2 = Gtk.MenuItem('answer')
 
-        func = partial(self._ignore, menu_item=menu_items, menu=menu, msg=msg)
-        item1.connect('activate', func)
-        item2.connect('activate', self.answer)
+        ignore_f = partial(self._ignore, menu_item=menu_items, menu=menu, msg=msg)
+        answer_f = partial(self._answer, menu_item=menu_items, menu=menu, msg=msg)
+        item1.connect('activate', ignore_f)
+        item2.connect('activate', answer_f)
 
         sub_menu.append(item1)
         sub_menu.append(item2)
@@ -55,12 +56,13 @@ class Applet:
         ind.set_attention_icon("indicator-messages-new")
         return ind
 
-    def answer(self, widget):
-        print 'answer'
+    def _answer(self, widget, menu_item, menu, msg):
+        self.db.add_answered(msg)
+        menu.remove(menu_item)
 
     def _ignore(self, widget, menu_item, menu, msg):
         self.db.add_ignored(msg)
-        menu.remove(menu_item)
+        self._update()
 
     def _make_menu(self):
         blocks = (('Recently', self.recently), ('Long', self.long),
@@ -82,6 +84,7 @@ class Applet:
         quit_item = Gtk.MenuItem("Quit")
         quit_item.connect("activate", self._quit)
         return quit_item
+
     def _download_messages(self):
         self.recently, self.long, self.long_long = self.db.get_messages()
 

@@ -5,6 +5,7 @@ class MailDB:
     def __init__(self, recently_time, long_time, long_long_time, dow_t, server):
         self.messages = set()
         self.messages_ignore = set()
+        self.answered = set()
 
         self.recently_t = recently_time
         self.long_t = long_time
@@ -33,7 +34,9 @@ class MailDB:
             self._update()
 
         for message in self.messages:
-            if message in self.messages_ignore:
+            if message in self.answered:
+                continue
+            if (message.sender, message.to) in self.messages_ignore:
                 continue
             time = datetime.now() - message.date
             time = time.total_seconds()
@@ -48,4 +51,7 @@ class MailDB:
         return recently, long, long_long
 
     def add_ignored(self, message):
-        self.messages_ignore.add(message)
+        self.messages_ignore.add((message.sender, message.to))
+
+    def add_answered(self, message):
+        self.answered.add(message)
