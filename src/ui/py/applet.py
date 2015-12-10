@@ -90,7 +90,7 @@ class Applet:
 
     def _make_label(self, msg):
         label = "{} : {} time:{}:{}:{}"
-        sec = int((datetime.now() - msg.date).total_seconds())
+        sec = int((datetime.utcnow() - msg.date).total_seconds())
 
         hour = sec // 3600
         minutes = (sec - hour * 3600) // 60

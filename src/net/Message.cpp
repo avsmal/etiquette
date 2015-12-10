@@ -7,11 +7,17 @@
 
 Message::Message(vmime::ref <vmime::net::message> const & msg,
                  vmime::ref <vmime::net::folder> const & folder):
-    message_ptr_(msg), folder_ptr_(folder), is_set_date_(false)
-{}
+    message_ptr_(msg), folder_ptr_(folder), is_set_date_(false) {
+    this->getFrom();
+    this->getSubject();
+    this->getDate();
+}
 Message::Message(Message const & msg):
-    folder_ptr_(msg.folder_ptr_), message_ptr_(msg.message_ptr_), is_set_date_(false)
-{}
+    folder_ptr_(msg.folder_ptr_), message_ptr_(msg.message_ptr_), is_set_date_(false) {
+    this->getFrom();
+    this->getSubject();
+    this->getDate();
+}
 std::string const & Message::getFrom() const {    
     if(from_.empty())
     {        
