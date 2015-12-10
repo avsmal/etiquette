@@ -44,13 +44,7 @@ DateTime const & Message::getDate() {
     if (!is_set_date_) {        
         auto s = message_ptr_->getHeader()->Date()->
                  getValue().dynamicCast<const vmime::datetime>();
-        date_.Year = s->getYear();
-        date_.Month = s->getMonth();
-        date_.Day = s->getDay();
-        date_.Hour = s->getHour();
-        date_.Minute = s->getMinute();
-        date_.Second = s->getSecond();
-        date_.Zone = s->getZone();
+        date_ = *s;
     }
     return date_;  
 }

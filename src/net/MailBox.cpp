@@ -70,7 +70,7 @@ void MailBox::makeStore_(vmime::utility::url const & url) {
     store_->setCertificateVerifier(vmime::create <interactiveCertificateVerifier>());
 }
 
-std::vector<Message> MailBox::getUnAnswered() {
+std::vector<Message> MailBox::getUnAnswered(const DateTime & from) {
     std::vector<Message> messages;
     try {
         std::vector< vmime::ref<vmime::net::folder> > folders = store_->getRootFolder()->getFolders(true);
@@ -78,7 +78,7 @@ std::vector<Message> MailBox::getUnAnswered() {
             folder->open(vmime::net::folder::MODE_READ_ONLY);
 
             if (!setting_.isIgnoredFolder(folder)) {
-                for (size_t i = 1; i <= folder->getMessageCount(); ++i) {
+                for (size_t i = folder->getMessageCount(); i >= 1; --i) {
                     auto msgVmime = folder->getMessage(i);
                     folder->fetchMessage(msgVmime,
                         vmime::net::folder::FetchOptions::FETCH_FLAGS |
@@ -87,6 +87,9 @@ std::vector<Message> MailBox::getUnAnswered() {
                     if (msg.isAnswered()) {
                         continue;
                     }
+                    if (msg.getDate() < from) {
+                        break;
+                    }   
                     messages.push_back(msg);
                 }
             }

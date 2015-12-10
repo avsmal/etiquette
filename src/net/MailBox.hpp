@@ -5,6 +5,7 @@
 
 #include "Message.hpp"
 #include "MailBoxSetting.hpp"
+#include "DateTime.hpp"
 
 class MailBox {
     public:
@@ -15,7 +16,7 @@ class MailBox {
     //Methods    
     bool connect();
     bool disconnect();
-    std::vector<Message> getUnAnswered();
+    std::vector<Message> getUnAnswered(const DateTime & from);
     std::string const & getLogin() const;
     MailBox & operator =(const MailBox & other);
     ~MailBox();

@@ -21,9 +21,10 @@ namespace {
             accounts_(Setting(path)) {
             vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();        
         }
-        list getNewMessages() {
+        list getNewMessages(int time_t) {
             list answer;
-            std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered();
+            DateTime s(time_t, 2);
+            std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered(s);
 
             for (auto itMap = map.begin(); itMap != map.end(); ++itMap) {
                 std::vector<Message> messages = itMap->second;
@@ -31,10 +32,10 @@ namespace {
                 for (size_t i = 0; i < messages.size(); ++i) {
                     Message msg = messages[i];
                     DateTime msg_date = msg.getDate();
-                    tuple date = make_tuple(msg_date.Year, msg_date.Month,
-                                            msg_date.Day,  msg_date.Hour,
-                                            msg_date.Minute, msg_date.Second,
-                                            msg_date.Zone);
+                    tuple date = make_tuple(msg_date.getYear(), msg_date.getMonth(),
+                                            msg_date.getDay(),  msg_date.getHour(),
+                                            msg_date.getMinute(), msg_date.getSecond(),
+                                            msg_date.getZone());
                     list entry;
                     entry.append(make_tuple(itMap->first, msg.getFrom()));
                     entry.append(date);                    

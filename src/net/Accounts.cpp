@@ -6,6 +6,7 @@
 #include "Message.hpp"
 #include "Accounts.hpp"
 #include "../../exception/exception.hpp"
+#include "DateTime.hpp"
 
 Accounts::Accounts(Setting const & setting):
     setting_(setting) {
@@ -16,7 +17,7 @@ Accounts::Accounts(Setting const & setting):
     }
 }
 
-std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
+std::map <std::string, std::vector<Message>> Accounts::getUnAnswered(const DateTime & from) {
     std::map <std::string, std::vector<Message>> answer;
     
     for (size_t i = 0; i < mail_boxes_.size(); ++i) {
@@ -26,7 +27,7 @@ std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
                 break;
             }
             try {
-                auto pair = std::make_pair(mail_boxes_[i].getLogin(), mail_boxes_[i].getUnAnswered());
+                auto pair = std::make_pair(mail_boxes_[i].getLogin(), mail_boxes_[i].getUnAnswered(from));
                 answer.insert(pair);
                 mail_boxes_[i].disconnect();
                 break;

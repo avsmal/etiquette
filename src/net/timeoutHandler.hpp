@@ -13,7 +13,6 @@ public:
     }
 
     void resetTimeOut() {
-        std::cout << " + " << std::endl;
         last_ = getTime();
     }
 

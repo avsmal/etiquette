@@ -48,7 +48,7 @@ class Server:
         self.accounts = AccountsPy(path_config)
 
     def download_messages(self, date):
-        imap_messages = self.accounts.getMessages()
+        imap_messages = self.accounts.getMessages(int((datetime.now() - datetime(1970, 1, 1)).total_seconds() - 5000000))
         self.messages = self._make_messages(imap_messages)
         return self.messages
 
