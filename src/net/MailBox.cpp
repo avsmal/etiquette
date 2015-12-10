@@ -1,13 +1,15 @@
 #include <string>
 #include <vector>
 #include <vmime/vmime.hpp>
+#include <exception>
+#include <iostream>
 
 #include "timeoutHandler.hpp"
 #include "Message.hpp"
 #include "MailBox.hpp"
 #include "MailBoxSetting.hpp"
 #include "certificateVerifier.hpp"
-
+#include "../../exception/exception.hpp"
         
 static vmime::ref <vmime::net::session> g_session
     = vmime::create <vmime::net::session>();
@@ -31,16 +33,30 @@ vmime::utility::url MailBox::makeUrl_(std::string const & login,
     return url;
 }
 bool MailBox::connect() {
-    if (!store_) {
-        makeStore_(makeUrl_(setting_.getLogin(), setting_.getPassword(), setting_.getServer()));
-        store_->connect();
+    if (store_) {
+        return true;
     }
-    return true;
+    int connection_attempt = 0;
+    makeStore_(makeUrl_(setting_.getLogin(), setting_.getPassword(), setting_.getServer()));
+    while (connection_attempt < 3) {
+        try {
+            store_->connect();
+            return true;
+        } catch (vmime::exceptions::connection_error & e) {
+            ++connection_attempt;
+        } catch (vmime::exceptions::authentication_error & e) {
+            throw AuthenticationException();
+        }
+    }
+    throw ConnectException();
 }
 
 bool MailBox::disconnect() {
     if (!store_) {
-        store_->disconnect();
+        try {
+            store_->disconnect();
+        } catch (std::exception &s) {
+        }
         store_ = NULL;
     }
     return true;
@@ -56,23 +72,27 @@ void MailBox::makeStore_(vmime::utility::url const & url) {
 
 std::vector<Message> MailBox::getUnAnswered() {
     std::vector<Message> messages;
-    std::vector< vmime::ref<vmime::net::folder> > folders = store_->getRootFolder()->getFolders(true);
-    for (auto folder : folders) {
-        folder->open(vmime::net::folder::MODE_READ_ONLY);
+    try {
+        std::vector< vmime::ref<vmime::net::folder> > folders = store_->getRootFolder()->getFolders(true);
+        for (auto folder : folders) {
+            folder->open(vmime::net::folder::MODE_READ_ONLY);
 
-        if (!setting_.isIgnoredFolder(folder)) {
-            for (size_t i = 1; i <= folder->getMessageCount(); ++i) {
-                auto msgVmime = folder->getMessage(i);
-                folder->fetchMessage(msgVmime,
-                                     vmime::net::folder::FetchOptions::FETCH_FLAGS |
-                                     vmime::net::folder::FetchOptions::FETCH_ENVELOPE);
-                Message msg(msgVmime, folder);
-                if (msg.isAnswered()) {
-                    continue;
+            if (!setting_.isIgnoredFolder(folder)) {
+                for (size_t i = 1; i <= folder->getMessageCount(); ++i) {
+                    auto msgVmime = folder->getMessage(i);
+                    folder->fetchMessage(msgVmime,
+                        vmime::net::folder::FetchOptions::FETCH_FLAGS |
+                        vmime::net::folder::FetchOptions::FETCH_ENVELOPE);
+                    Message msg(msgVmime, folder);
+                    if (msg.isAnswered()) {
+                        continue;
+                    }
+                    messages.push_back(msg);
                 }
-                messages.push_back(msg);
             }
         }
+    } catch (vmime::exception & e) {
+        throw NetException();
     }
     return messages;
     

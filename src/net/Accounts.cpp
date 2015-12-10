@@ -5,6 +5,7 @@
 #include "MailBox.hpp"
 #include "Message.hpp"
 #include "Accounts.hpp"
+#include "../../exception/exception.hpp"
 
 Accounts::Accounts(Setting const & setting):
     setting_(setting) {
@@ -19,15 +20,41 @@ std::map <std::string, std::vector<Message>> Accounts::getUnAnswered() {
     std::map <std::string, std::vector<Message>> answer;
     
     for (size_t i = 0; i < mail_boxes_.size(); ++i) {
-        mail_boxes_[i].connect();
-        auto pair = std::make_pair(mail_boxes_[i].getLogin(), 
-                                   mail_boxes_[i].getUnAnswered());
-        answer.insert(pair);
-        mail_boxes_[i].disconnect();
+        int n = 0;
+        while (n < 3) {
+            if (!this->connectMailBox_(mail_boxes_[i])) {
+                break;
+            }
+            try {
+                auto pair = std::make_pair(mail_boxes_[i].getLogin(), mail_boxes_[i].getUnAnswered());
+                answer.insert(pair);
+                mail_boxes_[i].disconnect();
+                break;
+            } catch (NetException & e) {
+                n++;
+                mail_boxes_[i].disconnect();
+                continue;
+            }
+        }
+        if (n == 3) {
+            std::cerr << "Сan not retrieve messages from the mailbox:" << mail_boxes_[i].getLogin() <<"." << std::endl;
+        }       
     }
     return answer;
 }
 
+bool Accounts::connectMailBox_(MailBox & mailBox) {
+    try {
+            mailBox.connect();
+            return true;
+    } catch (ConnectException & e) {
+            std::cerr << "Unable to connect:" << mailBox.getLogin() <<"." << std::endl;
+            return false;
+    } catch (AuthenticationException & e) {
+            return false;
+            std::cerr << "Unable to connect:" << mailBox.getLogin() << ". Incorrect login or password."<< std::endl;
+    }
+}
 MailBox Accounts::makeMailBox_(TiXmlElement const * mailBoxXML) {
     std::string login = mailBoxXML->Attribute("login");
     std::string password = mailBoxXML->Attribute("password");

@@ -13,6 +13,7 @@ public:
     Accounts(Setting const & setting);
     std::map <std::string, std::vector<Message>> getUnAnswered();
 private:
+    bool connectMailBox_(MailBox & mailBox);
     Setting setting_;
     std::vector<MailBox> mail_boxes_;
     MailBox makeMailBox_(TiXmlElement const * mailBoxXML);

@@ -1,6 +1,7 @@
 #include <vmime/platforms/posix/posixHandler.hpp> 
 #include "../src/net/MailBox.hpp"
 #include "../src/net/MailBoxSetting.hpp"
+#include "../exception/exception.hpp"
 #include <gtest/gtest.h>
 
 
@@ -17,10 +18,15 @@ class MailBoxTest : public ::testing::Test {
         MailBoxSetting setting_2("test.imap2016@mail.ru", "2345fg123", "imap.mail.ru:993");
         MailBox mailbox2(setting_2);
         mailbox2_ = mailbox2;
+        
+        MailBoxSetting setting_3("test.imap201456@mail.ru", "824222443", "imap.mail.ru:993");
+        MailBox mailbox3(setting_3);
+        mailbox3_ = mailbox3;
     }
 
     MailBox mailbox1_;
     MailBox mailbox2_;
+    MailBox mailbox3_;
 };
 
 TEST_F(MailBoxTest, getUnAnswered) {
@@ -34,6 +40,13 @@ TEST_F(MailBoxTest, getUnAnswered) {
 TEST_F(MailBoxTest, getLogin) {
     mailbox1_.connect();
     EXPECT_EQ("test.imap2015@mail.ru", mailbox1_.getLogin());
+}
+
+TEST_F(MailBoxTest, AuthenticationException) {
+    try {
+        mailbox3_.connect();
+    } catch (AuthenticationException & e) {
+    }
 }
 
 int main(int argc, char **argv) {

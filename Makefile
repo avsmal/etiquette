@@ -17,7 +17,7 @@ test: bin bin/test
 bin/accounts.so: bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/Accounts_Py.o
 	g++ -std=c++11 -shared $^ $(tinyxml) $(python) $(vmime) $(notify) -lboost_python -o $@
 
-bin/test: bin/messagesmodule.o bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/test.o
+bin/test: bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/test.o
 	g++ -std=c++11 -g $^ $(tinyxml) $(python) $(vmime) $(notify) $(lib_test) -o $@
 
 bin/test.o: test/test.cpp src/net/MailBox.hpp src/net/MailBoxSetting.hpp
