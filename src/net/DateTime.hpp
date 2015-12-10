@@ -5,9 +5,9 @@ class DateTime {
 
 public:
     DateTime(const vmime::datetime & datetime):
-        datetime_(datetime)
+        datetime_(vmime::utility::datetimeUtils::toUniversalTime(datetime))
     {}
-    DateTime(int second, int zone) {
+    DateTime(int second) {
         datetime_  = vmime::datetime(second);
     }
     DateTime() {
@@ -38,7 +38,7 @@ public:
         return datetime_ < other.datetime_;
     }
     DateTime & operator= (const vmime::datetime &other) {
-        datetime_ = other;
+        datetime_ = vmime::utility::datetimeUtils::toUniversalTime(other);
         return *this;
     }
     DateTime & operator= (const DateTime &other) {

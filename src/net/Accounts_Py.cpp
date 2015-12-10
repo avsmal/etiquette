@@ -23,7 +23,7 @@ namespace {
         }
         list getNewMessages(int time_t) {
             list answer;
-            DateTime s(time_t, 2);
+            DateTime s(time_t);
             std::map <std::string, std::vector<Message>> map = accounts_.getUnAnswered(s);
 
             for (auto itMap = map.begin(); itMap != map.end(); ++itMap) {
