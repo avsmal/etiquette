@@ -37,8 +37,11 @@ namespace {
                                             msg_date.getMinute(), msg_date.getSecond(),
                                             msg_date.getZone());
                     list entry;
-                    entry.append(make_tuple(itMap->first, msg.getFrom()));
-                    entry.append(date);                    
+                    entry.append(itMap->first);
+                    entry.append(msg.getFrom());
+                    entry.append(date);
+                    entry.append(msg.getSubject());
+                    entry.append(msg.getBody());                  
                     answer.append(entry);    
                 }
             }

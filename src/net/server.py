@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 import random
 import time
+import pymorphy2
+morph = pymorphy2.MorphAnalyzer()
 from datetime import datetime
 from collections import namedtuple
 from accounts import AccountsPy
@@ -16,7 +19,7 @@ TestMail = [['test.imap2015@mail.ru',
                                           'mailapps@corp.mail.ru',
                                           'welcome@corp.mail.ru']]]
 
-Message = namedtuple('Message', ['sender', 'to', 'date'])
+Message = namedtuple('Message', ['sender', 'to', 'date', 'subject', 'body'])
 
 
 def add_date(imap_messages):
@@ -42,21 +45,48 @@ def make_messages(imap_messages):
     return messages
 
 
+def get_text_part(msg_body):
+    parts = msg_body.split('Content-Type:')
+    answer = []
+    for part in parts:
+        s_part = part.strip(' ')
+        if s_part.startswith('text/plain'):
+            answer.append(s_part)
+    return answer
+
+
 class Server:
-    def __init__(self, path_config):
-        self.messages = make_messages(add_date(TestMail))
+    def __init__(self, path_config, enable_filter=True):
         self.accounts = AccountsPy(path_config)
+        self.enable_filter = enable_filter
 
     def download_messages(self, date):
-        imap_messages = self.accounts.getMessages(int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() - 5000))
+        imap_messages = self.accounts.getMessages(int((
+                                                      datetime.utcnow() - datetime(
+                                                          1970, 1,
+                                                          1)).total_seconds() - 500000 * 40))
         self.messages = self._make_messages(imap_messages)
         return self.messages
 
     def _make_messages(self, imap_messages):
         answer = []
         for msg in imap_messages:
-            to, sender = msg[0]
-            date = datetime(msg[1][0], msg[1][1], msg[1][2], msg[1][3],
-                            msg[1][4], msg[1][5])
-            answer.append(Message(sender, to, date))
+            to, sender = msg[0], msg[1]
+            date = datetime(msg[2][0], msg[2][1], msg[2][2], msg[2][3],
+                            msg[2][4], msg[2][5])
+            body_text = '\n'.join(get_text_part(msg[4]))
+            if self._filter_msg(body_text):
+                answer.append(Message(sender, to, date, msg[3], body_text))
         return answer
+
+    def _filter_msg(self, body):
+        text = body.lower()
+        if 'не отвечайте на это письмо' in body:
+            return False
+        for word in body.split():
+            string = unicode(word, 'utf-8')
+            p = morph.parse(string)[0]
+            if 'impr' in p.tag:
+                print(string)
+                return True
+        return False

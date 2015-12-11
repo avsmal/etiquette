@@ -11,12 +11,14 @@ Message::Message(vmime::ref <vmime::net::message> const & msg,
     this->getFrom();
     this->getSubject();
     this->getDate();
+    this->getBody();
 }
 Message::Message(Message const & msg):
     folder_ptr_(msg.folder_ptr_), message_ptr_(msg.message_ptr_), is_set_date_(false) {
     this->getFrom();
     this->getSubject();
     this->getDate();
+    this->getBody();
 }
 std::string const & Message::getFrom() const {    
     if(from_.empty())
@@ -40,10 +42,10 @@ std::string const & Message::getBody() {
     if(body_.empty()) {
         vmime::string                             outString;
         vmime::utility::outputStreamStringAdapter out(outString);
-
-        vmime::messageParser parsedMessage(message_ptr_->getParsedMessage());
+        message_ptr_->extract(out);
+        body_ = outString;
     }
-    return body_; //?
+    return body_;
 }
 
 DateTime const & Message::getDate() {
