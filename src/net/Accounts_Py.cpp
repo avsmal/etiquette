@@ -58,4 +58,7 @@ BOOST_PYTHON_MODULE(accounts) {
     class_<AccountsPy>("AccountsPy", init<std::string>())
         .def("getMessages", &AccountsPy::getNewMessages)
     ;
+    class_<Setting>("Setting", init<std::string>())
+        .def("getString", &Setting::getString)
+    ;
 }

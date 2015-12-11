@@ -2,7 +2,7 @@
 #include "tinyxml.h"
 
 #include "Setting.hpp"
-
+#include <iostream>
 Setting::Setting(std::string const & configPath):
     configPath_(configPath), loaded_(false)
 {}
@@ -31,4 +31,18 @@ TiXmlElement const * Setting::get(std::string const & path) const {
         partPath = "";        
     }
     return docHandle.FirstChild(partPath.c_str()).ToElement();
+}
+
+
+std::string Setting::getString(std::string const & path) const {
+    std::string new_path;
+    std::string attribute;
+    for (size_t i = path.size() - 1; i >= 0; --i) {
+        if (path[i] == '.') {
+            new_path = path.substr(0, i);
+            attribute = path.substr(i + 1, path.size());
+            break;
+        }
+    }
+    return this-> get(new_path)->Attribute(attribute.c_str());   
 }

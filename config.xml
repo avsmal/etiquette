@@ -6,4 +6,5 @@
 		<mailbox login="test.imap2017@mail.ru" password="223ffdfww3456" server="imap.mail.ru:993"/>
 		<mailbox login="test.imap2018@mail.ru" password="df3wwqq23434" server="imap.mail.ru:993"/>
 	</mailboxs>
+    <time recently="5" long="15" long_long="10000000" dodownload_time = "1000"/>
 </ddd>
