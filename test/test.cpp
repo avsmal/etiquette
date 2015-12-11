@@ -3,6 +3,7 @@
 #include "../src/net/MailBoxSetting.hpp"
 #include "../exception/exception.hpp"
 #include <gtest/gtest.h>
+#include "../src/net/DateTime.hpp"
 
 
 class MailBoxTest : public ::testing::Test {
@@ -22,8 +23,8 @@ class MailBoxTest : public ::testing::Test {
         MailBoxSetting setting_3("test.imap201456@mail.ru", "824222443", "imap.mail.ru:993");
         MailBox mailbox3(setting_3);
         mailbox3_ = mailbox3;
+        
     }
-
     MailBox mailbox1_;
     MailBox mailbox2_;
     MailBox mailbox3_;
@@ -31,10 +32,10 @@ class MailBoxTest : public ::testing::Test {
 
 TEST_F(MailBoxTest, getUnAnswered) {
     mailbox1_.connect();
-    EXPECT_EQ(5, mailbox1_.getUnAnswered().size());
+    EXPECT_EQ(5, mailbox1_.getUnAnswered(DateTime(1)).size());
     mailbox2_.connect();
-    EXPECT_EQ(1, mailbox2_.getUnAnswered().size());
-    EXPECT_EQ("welcome@corp.mail.ru", mailbox2_.getUnAnswered()[0].getFrom());
+    EXPECT_EQ(2, mailbox2_.getUnAnswered(DateTime(1)).size());
+    EXPECT_EQ("bagman_2008@mail.ru", mailbox2_.getUnAnswered(DateTime(1))[0].getFrom());
 }
 
 TEST_F(MailBoxTest, getLogin) {
