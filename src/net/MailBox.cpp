@@ -40,6 +40,7 @@ bool MailBox::connect() {
     makeStore_(makeUrl_(setting_.getLogin(), setting_.getPassword(), setting_.getServer()));
     while (connection_attempt < 3) {
         try {
+            std::cout << "Connect to: " << setting_.getLogin() << std::endl;
             store_->connect();
             return true;
         } catch (vmime::exceptions::connection_error & e) {
@@ -72,6 +73,7 @@ void MailBox::makeStore_(vmime::utility::url const & url) {
 
 std::vector<Message> MailBox::getUnAnswered(const DateTime & from) {
     std::vector<Message> messages;
+    std::cout << "Download messages";
     try {
         std::vector< vmime::ref<vmime::net::folder> > folders = store_->getRootFolder()->getFolders(true);
         for (auto folder : folders) {
@@ -79,6 +81,7 @@ std::vector<Message> MailBox::getUnAnswered(const DateTime & from) {
 
             if (!setting_.isIgnoredFolder(folder)) {
                 for (size_t i = folder->getMessageCount(); i >= 1; --i) {
+                    std::cout << ".";
                     auto msgVmime = folder->getMessage(i);
                     folder->fetchMessage(msgVmime,
                         vmime::net::folder::FetchOptions::FETCH_FLAGS |
@@ -97,6 +100,7 @@ std::vector<Message> MailBox::getUnAnswered(const DateTime & from) {
     } catch (vmime::exception & e) {
         throw NetException();
     }
+    std::cout << "done." << std::endl;
     return messages;
     
 }
