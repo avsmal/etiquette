@@ -16,7 +16,10 @@ class FilterMessages:
 
     def _imperative_mood(self, body):
         for word in body.split():
-            string = unicode(word, 'utf-8')
+            try:
+                string = unicode(word, 'utf-8')
+            except UnicodeDecodeError:
+                break;
             p = self.morph.parse(string)[0]
             if 'impr' in p.tag:
                 return True
