@@ -7,11 +7,18 @@ tinyxml=-ltinyxml
 lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 comflag=-std=c++11 -c -g -fPIC
 
-all: bin bin/accounts.so bin/applet.py bin/main.py bin/server.py bin/MailDB.py bin/config.xml
+all: bin bin/accounts.so bin/applet.py bin/main.py bin/server.py bin/MailDB.py bin/FilterMessages.py bin/config.xml
 
 valgrind: bin test
 	valgrind --leak-check=full -v --log-file="valgrind.log" ./bin/test
 
+testrun: test all testcpp testpy
+
+testcpp:
+	valgrind --leak-check=full -v --log-file="valgrind.log" ./bin/test
+testpy: bin/TestFilterMessages.py all 
+	python -m pytest -q ./bin/TestFilterMessages.py
+	
 test: bin bin/test
 
 bin/accounts.so: bin/MailBoxSetting.o bin/certificateVerifier.o bin/NotifyMessage.o bin/Message.o bin/MailBox.o bin/Setting.o bin/Accounts.o bin/Accounts_Py.o
@@ -50,6 +57,9 @@ bin/MailBoxSetting.o: src/net/MailBoxSetting.cpp src/net/MailBoxSetting.hpp
 bin/messagesmodule.o: src/net/messagesmodule.c src/ui/cpp/NotifyMessage.hpp src/net/Message.hpp
 	g++ $(comflag) $(python) src/net/messagesmodule.c -o $@
 
+
+bin/FilterMessages.py: src/db/FilterMessages.py
+	cp ./src/db/FilterMessages.py bin/
 bin/applet.py: src/ui/py/applet.py
 	cp ./src/ui/py/applet.py bin/
 bin/main.py: src/main.py
@@ -62,6 +72,9 @@ bin/config.xml: config.xml
 	cp ./config.xml bin/
 bin:
 	mkdir bin
+
+bin/TestFilterMessages.py: test/TestFilterMessages.py
+	cp ./test/TestFilterMessages.py bin/
 
 clean:
 	rm -rf ./bin

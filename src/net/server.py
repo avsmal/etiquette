@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 import time
-import pymorphy2
-morph = pymorphy2.MorphAnalyzer()
+from FilterMessages import FilterMessages
 from datetime import datetime
 from collections import namedtuple
 from accounts import AccountsPy
@@ -59,12 +58,11 @@ class Server:
     def __init__(self, path_config, enable_filter=True):
         self.accounts = AccountsPy(path_config)
         self.enable_filter = enable_filter
+        self.filter = FilterMessages()
 
-    def download_messages(self, date):
-        imap_messages = self.accounts.getMessages(int((
-                                                      datetime.utcnow() - datetime(
-                                                          1970, 1,
-                                                          1)).total_seconds() - 500000 * 40))
+    def download_messages(self, time):
+        delta_t = (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() - time
+        imap_messages = self.accounts.getMessages(int(delta_t))
         self.messages = self._make_messages(imap_messages)
         return self.messages
 
@@ -75,18 +73,7 @@ class Server:
             date = datetime(msg[2][0], msg[2][1], msg[2][2], msg[2][3],
                             msg[2][4], msg[2][5])
             body_text = '\n'.join(get_text_part(msg[4]))
-            if self._filter_msg(body_text):
-                answer.append(Message(sender, to, date, msg[3], body_text))
+            new_msg = Message(sender, to, date, msg[3], body_text)
+            if self.enable_filter and self.filter(new_msg):
+                answer.append(new_msg)
         return answer
-
-    def _filter_msg(self, body):
-        text = body.lower()
-        if 'не отвечайте на это письмо' in body:
-            return False
-        for word in body.split():
-            string = unicode(word, 'utf-8')
-            p = morph.parse(string)[0]
-            if 'impr' in p.tag:
-                print(string)
-                return True
-        return False

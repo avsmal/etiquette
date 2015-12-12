@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import pymorphy2
-import sys
-
-morph = pymorphy2.MorphAnalyzer()
+import accounts
 from applet import Applet
 from MailDB import MailDB
 from server import Server
@@ -18,8 +15,14 @@ dow_t = 1E9
 
 
 if __name__ == '__main__':
+    setting = accounts.Setting('config.xml')
     server = Server('config.xml')
-    msg = server.download_messages(2)
+
+    recently = int(setting.getString('ddd.time.recently'))
+    long = int(setting.getString('ddd.time.long'))
+    long_long = int(setting.getString('ddd.time.long_long'))
+    dow_t = int(setting.getString('ddd.time.download_time'))
+
     db = MailDB(recently, long, long_long, dow_t, server)
     ap = Applet(data_base=db)
     ap.show()

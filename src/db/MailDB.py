@@ -16,7 +16,7 @@ class MailDB:
         self.data_last_update = datetime.min
 
     def _download_messages(self):
-        return self.server.download_messages(self.data_last_update)
+        return self.server.download_messages(self.long_long_t)
 
     def _update(self):
         new_messages = self._download_messages()
