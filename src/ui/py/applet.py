@@ -1,4 +1,5 @@
 import sys
+import os
 from gi.repository import Gtk, Gdk, GLib, AppIndicator3 as appindicator
 from datetime import datetime
 from functools import partial
@@ -38,9 +39,6 @@ class Applet:
         return sub_menu
 
     def _make_block_menu(self, name, messages, menu):
-        title = Gtk.MenuItem(name + ":")
-        menu.append(title)
-
         for msg in messages:
             menu_items = Gtk.MenuItem(self._make_label(msg))
             menu_items.set_submenu(self._sub_menu(menu_items, menu, msg))
@@ -50,10 +48,12 @@ class Applet:
 
     def _make_indicator(self):
         ind = appindicator.Indicator.new("example-simple-client",
-                                         "indicator-messages",
+                                         os.path.abspath('gtk-apply_6028.ico'),
                                          appindicator.IndicatorCategory.APPLICATION_STATUS)
         ind.set_status(appindicator.IndicatorStatus.ACTIVE)
-        ind.set_attention_icon("indicator-messages-new")
+        s = os.path.split(os.path.abspath(__file__))[0]
+        s = os.path.join(s, 'asd.ico')
+        ind.set_icon(s)
         return ind
 
     def _answer(self, widget, menu_item, menu, msg):
@@ -69,6 +69,16 @@ class Applet:
                   ('Long long', self.long_long))
         menu = Gtk.Menu()
         for name, messages in blocks:
+            img = Gtk.Image()
+            s = os.path.split(os.path.abspath(__file__))[0]
+            s = os.path.join(s, name + '.png')
+            img.set_from_file(s)
+            img.show()
+            title = Gtk.ImageMenuItem(Gtk.STOCK_NEW, name)
+            title.get_children()[0].set_label(name)
+            title.set_image(img)
+            title.set_always_show_image(True)
+            menu.append(title)
             self._make_block_menu(name, messages, menu)
         menu.append(self._make_quit())
         return menu
@@ -89,14 +99,14 @@ class Applet:
         self.recently, self.long, self.long_long = self.db.get_messages()
 
     def _make_label(self, msg):
-        label = "{} : {} time:{}:{}:{}"
+        label = "{}:\n {}\n {} time:{}:{}:{}"
         sec = int((datetime.utcnow() - msg.date).total_seconds())
 
         hour = sec // 3600
         minutes = (sec - hour * 3600) // 60
         sec = (sec - hour * 3600 - minutes * 60)
 
-        return label.format(msg.to, msg.sender, hour, minutes, sec)
+        return label.format(msg.to, msg.sender, msg.subject, hour, minutes, sec)
 
     def _quit(self, widget):
         sys.exit(0)
