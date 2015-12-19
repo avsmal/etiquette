@@ -52,7 +52,7 @@ class Applet:
                                          appindicator.IndicatorCategory.APPLICATION_STATUS)
         ind.set_status(appindicator.IndicatorStatus.ACTIVE)
         s = os.path.split(os.path.abspath(__file__))[0]
-        s = os.path.join(s, 'asd.ico')
+        s = os.path.join(s, 'icons', 'head.ico')
         ind.set_icon(s)
         return ind
 
@@ -71,7 +71,7 @@ class Applet:
         for name, messages in blocks:
             img = Gtk.Image()
             s = os.path.split(os.path.abspath(__file__))[0]
-            s = os.path.join(s, name + '.png')
+            s = os.path.join(s, 'icons', name + '.png')
             img.set_from_file(s)
             img.show()
             title = Gtk.ImageMenuItem(Gtk.STOCK_NEW, name)

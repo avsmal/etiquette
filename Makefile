@@ -7,7 +7,7 @@ tinyxml=-ltinyxml
 lib_test=-lgtest -lpthread -I /usr/gtest/include -lgtest_main
 comflag=-std=c++11 -c -g -fPIC
 
-all: bin bin/accounts.so bin/applet.py bin/main.py bin/server.py bin/MailDB.py bin/FilterMessages.py bin/config.xml
+all: bin icon bin/accounts.so bin/applet.py bin/main.py bin/server.py bin/MailDB.py bin/FilterMessages.py bin/config.xml
 
 valgrind: bin test
 	valgrind --leak-check=full -v --log-file="valgrind.log" ./bin/test
@@ -71,7 +71,9 @@ bin/MailDB.py: src/db/MailDB.py
 bin/config.xml: config.xml
 	cp ./config.xml bin/
 bin:
-	mkdir bin
+	mkdir -p bin/icons
+icon:
+	cp -r /home/bagmanas/etiquette/icons/* bin/icons
 
 bin/TestFilterMessages.py: test/TestFilterMessages.py
 	cp ./test/TestFilterMessages.py bin/
