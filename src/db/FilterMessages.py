@@ -16,21 +16,17 @@ class FilterMessages:
 
     def _imperative_mood(self, body):
         for word in body.split():
-            try:
-                string = unicode(word, 'utf-8')
-            except UnicodeDecodeError:
-                break;
-            p = self.morph.parse(string)[0]
+            p = self.morph.parse(word)[0]
             if 'impr' in p.tag:
                 return True
         return False
 
     def _inspection_of_phrases_off(self, body):
-        if 'не отвечайте на это письмо' in body:
+        if u'не отвечайте на это письмо' in body:
             return False
         return True
 
     def _inspection_of_phrases_on(self, body):
-        if '?' in body:
+        if u'?' in body:
             return True
         return False

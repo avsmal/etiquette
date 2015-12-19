@@ -50,7 +50,16 @@ def get_text_part(msg_body):
     for part in parts:
         s_part = part.strip(' ')
         if s_part.startswith('text/plain'):
-            answer.append(s_part)
+            answer.append(body_encode(s_part))
+    return answer
+
+
+def body_encode(text):
+    answer = u""
+    try:
+        answer = text.decode('utf-8')
+    except UnicodeDecodeError:
+        answer = u"The text of the letter is not recognized"
     return answer
 
 
