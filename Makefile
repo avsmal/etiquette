@@ -73,7 +73,7 @@ bin/config.xml: config.xml
 bin:
 	mkdir -p bin/icons
 icon:
-	cp -r /home/bagmanas/etiquette/icons/* bin/icons
+	cp -r ./icons/* bin/icons
 
 bin/TestFilterMessages.py: test/TestFilterMessages.py
 	cp ./test/TestFilterMessages.py bin/
